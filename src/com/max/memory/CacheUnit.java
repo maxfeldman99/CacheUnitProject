@@ -23,13 +23,12 @@ public class CacheUnit<T> {
 	public DataModel<T>[] getDataModels(Long[] ids) throws ClassNotFoundException, IOException {
 		
 		ArrayList<DataModel<T>> models = new ArrayList<>(); // something to hold my DataModels
-		//DataModel<T>[] myModels = new DataModel[ids.length];
 		DataModel<T> dataModel;
 		
 		for(int i=0;i<ids.length;i++) {
 			dataModel = iAlgoCache.getElement(ids[i]);
 			if(dataModel!=null) {
-				models.add(dataModel);
+				models.add(dataModel); //add to my arrayList
 			}else {
 				dataModel = dao.find(ids[i]); // if not exist so we search for it by ids
 				//  if cash if not full return the data model
