@@ -6,65 +6,116 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import com.max.dm.DataModel;
 
-public class DaoFileImpl<T> extends java.lang.Object implements IDao<Long,DataModel<T>> {
+public class DaoFileImpl<T> extends java.lang.Object implements IDao<Long, DataModel<T>> {
+
+	String filePath;
+	ObjectInputStream inputStream = null;
+	ObjectOutputStream outputStream = null;
+	LinkedHashMap<Long, DataModel<T>> hashMap;
 	
-	
-	 String filePath;
-	 ObjectInputStream inputStream = null;
-	 ObjectOutputStream outputStream = null;
-	
-	
+
 	DaoFileImpl(String filePath) {
-		this.filePath = filePath;
+		this.filePath = filePath; //"DataSource.txt"
+		hashMap = new LinkedHashMap<>();
 	}
-	
-	
+
 	@Override
 	public void save(DataModel<T> entity) {
-		// TODO Auto-generated method stub
+		try {
+			openInStream();
+			hashMap.put(entity.getDataModelId(), entity);
+			openOutStream();
+	
+		} finally {
+			closeStreamSafe();
+		}
 		
+		//write on my database
+		//open output
+		//write
+		//close
+		
+		
+
 	}
 
 	@Override
 	public void delete(DataModel<T> entity) throws IllegalArgumentException {
-	
+		
+		try {
+			if(hashMap.containsKey(entity.getDataModelId())) {
+				openOutStream();
+				hashMap.remove(entity.getDataModelId(), entity);
+			}
+		
+		} finally {
+			closeStreamSafe();
+		}
+		//open output
+		// delete from map
+		//update  stream
+		//close
 	}
 
 	@Override
 	public DataModel<T> find(Long id) throws IllegalArgumentException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	private void openInputStream() {
 		
-	}
-	
-	private void executeTest() throws FileNotFoundException, IOException  { 
-		
-			
-			try {
-
-			    inputStream = new ObjectInputStream(new FileInputStream(filePath));
-			    outputStream = new ObjectOutputStream(new FileOutputStream(filePath,false));
-
-			    /////....
-
-			} finally {
-
-			    try { if (inputStream != null) inputStream.close(); } catch(IOException e) {}
-			    try { if (outputStream != null) outputStream.close(); } catch(IOException e) {}
-
+		try {
+			openInStream();
+			if(hashMap.containsKey(id)) {
+				return hashMap.get(id);
+				
+			}else {
+				return null;
 			}
-	}
 		
+		} finally {
+			closeStreamSafe();
+		}
+		
+	}
+
+	private void openInStream() { // to readback what we have write
+		try {
+			inputStream = new ObjectInputStream(new FileInputStream(filePath));
+			hashMap = (LinkedHashMap<Long, DataModel<T>>) inputStream.readObject(); //hashMap receives my data
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	private void openOutStream() { //to write into my file
+		try {
+			outputStream = new ObjectOutputStream(new FileOutputStream(filePath, false));
+			outputStream.writeObject(hashMap); //hashMap receives my data
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
+	private void closeStreamSafe() {
+		try {
+			if (inputStream != null)
+				inputStream.close();
+		} catch (IOException e) {
+		}
+		try {
+			if (outputStream != null)
+				outputStream.close();
+		} catch (IOException e) {
+		}
+	}
+	
+		
+		
+	}
 
 
-	
 }
-
-	
