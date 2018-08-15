@@ -16,7 +16,7 @@ public class DaoFileImpl<T> extends java.lang.Object implements IDao<Long, DataM
 	String filePath;
 	ObjectInputStream inputStream = null;
 	ObjectOutputStream outputStream = null;
-	LinkedHashMap<Long, DataModel<T>> hashMap;
+	LinkedHashMap<Long, DataModel<T>> hashMap; // to hold our data from file
 	
 
 	DaoFileImpl(String filePath) {
@@ -80,7 +80,7 @@ public class DaoFileImpl<T> extends java.lang.Object implements IDao<Long, DataM
 		
 	}
 
-	private void openInStream() { // to readback what we have write
+	private void openInStream() { // to read from our file
 		try {
 			inputStream = new ObjectInputStream(new FileInputStream(filePath));
 			hashMap = (LinkedHashMap<Long, DataModel<T>>) inputStream.readObject(); //hashMap receives my data
@@ -90,7 +90,7 @@ public class DaoFileImpl<T> extends java.lang.Object implements IDao<Long, DataM
 		}
 		
 	}
-	private void openOutStream() { //to write into my file
+	private void openOutStream() { //  to write to our file
 		try {
 			outputStream = new ObjectOutputStream(new FileOutputStream(filePath, false));
 			outputStream.writeObject(hashMap); //hashMap receives my data
@@ -100,7 +100,7 @@ public class DaoFileImpl<T> extends java.lang.Object implements IDao<Long, DataM
 		}
 	}
 	
-	private void closeStreamSafe() {
+	private void closeStreamSafe() { // each time we use in/out streams we will eventually close the streams inside finally
 		try {
 			if (inputStream != null)
 				inputStream.close();
