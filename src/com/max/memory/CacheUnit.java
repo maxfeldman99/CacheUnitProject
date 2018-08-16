@@ -22,17 +22,26 @@ public class CacheUnit<T> {
 
 	public DataModel<T>[] getDataModels(Long[] ids) throws ClassNotFoundException, IOException {
 		
-		ArrayList<DataModel<T>> models = new ArrayList<>(); // something to hold my DataModels
+		DataModel<T>[] models = new DataModel[ids.length];
 		DataModel<T> dataModel;
 		
 		for(int i=0;i<ids.length;i++) {
-			dataModel = iAlgoCache.getElement(ids[i]);
+			dataModel = iAlgoCache.getElement(ids[i]); // if we have an id so we get it by id
+			
 			if(dataModel!=null) {
-				models.add(dataModel); //add to my arrayList
+				models[i] = dataModel; //add to my arrayList
 			}else {
-				dataModel = dao.find(ids[i]); // if not exist so we search for it by ids
-				//  if cash if not full return the data model
+				dataModel = dao.find(ids[i]); // if not exist so we search for it by id
+				iAlgoCache.putElement(dataModel.getDataModelId(), dataModel);//and we use it by paging algorithm
+				
+				
+				//  if cash is not full return the data model
 				// else make the logic for the full cache
+				// if we received something that not null , so we had a page fault and we need to update the file 
+				
+				dao.save(dataModel);
+				models[i] = dataModel;
+				
 				
 			}
 			
@@ -53,7 +62,7 @@ public class CacheUnit<T> {
 //	end;
 //	return dataModels [] // from Cache
 
-		return null;
+		return models;
 
 	}
 

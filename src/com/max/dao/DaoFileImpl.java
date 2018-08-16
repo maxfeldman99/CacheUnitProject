@@ -27,7 +27,7 @@ public class DaoFileImpl<T> extends java.lang.Object implements IDao<Long, DataM
 	@Override
 	public void save(DataModel<T> entity) {
 		try {
-			openInStream();
+			openInStream(); // first , we need to update our hashMap
 			hashMap.put(entity.getDataModelId(), entity);
 			openOutStream();
 	
@@ -50,7 +50,7 @@ public class DaoFileImpl<T> extends java.lang.Object implements IDao<Long, DataM
 		try {
 			if(hashMap.containsKey(entity.getDataModelId())) {
 				openOutStream();
-				hashMap.remove(entity.getDataModelId(), entity);
+				hashMap.remove(entity.getDataModelId(), entity); // only makes null , its don
 			}
 		
 		} finally {
@@ -118,4 +118,3 @@ public class DaoFileImpl<T> extends java.lang.Object implements IDao<Long, DataM
 	}
 
 
-}
