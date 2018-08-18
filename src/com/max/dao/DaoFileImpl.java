@@ -19,18 +19,27 @@ public class DaoFileImpl<T> extends java.lang.Object implements IDao<Long, DataM
 	LinkedHashMap<Long, DataModel<T>> hashMap; // to hold our data from file
 	
 
-	DaoFileImpl(String filePath) {
+	public DaoFileImpl(String filePath) {
 		this.filePath = filePath; //"DataSource.txt"
 		hashMap = new LinkedHashMap<>();
 	}
+	
+	public DaoFileImpl(){
+        filePath = "outFile.txt";
+        
+    }
+	
 
 	@Override
 	public void save(DataModel<T> entity) {
 		try {
 			openInStream(); // first , we need to update our hashMap
+			
+			if(entity!=null) {
 			hashMap.put(entity.getDataModelId(), entity);
 			openOutStream();
-	
+			}
+			
 		} finally {
 			closeStreamSafe();
 		}

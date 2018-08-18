@@ -29,6 +29,12 @@ public class DataModel<T> extends Object implements Serializable
 	public void setContent(T content) {
 		this.content = content;
 	}
+
+
+	@Override
+	public String toString() {
+		return "DataModel [id=" + id + ", content=" + content + "]";
+	}
 	
 
 }
