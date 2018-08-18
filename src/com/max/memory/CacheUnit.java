@@ -26,7 +26,7 @@ public class CacheUnit<T> {
 		DataModel<T> dataModel;
 		
 		for(int i=0;i<ids.length;i++) {
-			dataModel = iAlgoCache.getElement(ids[i]); // if we have an id so we get it by id
+			dataModel = iAlgoCache.getElement(ids[i]); //if we have an id so we get it by id
 			
 			if(dataModel!=null) { // if in cache
 				models[i] = dataModel; //add to my arrayList
@@ -47,20 +47,15 @@ public class CacheUnit<T> {
 		
 
 		return models;
-
 	}
-
+	
 	public DataModel<T>[] putDataModels(DataModel<T>[] datamodels) {
-		long id;
 		for (int i = 0; i < datamodels.length; i++) {
 		
 			iAlgoCache.putElement(datamodels[i].getDataModelId(),  datamodels[i]); //should be datamodels[i].getContent?
 			dao.save(datamodels[i]);
 		}
-		
-		
 		return datamodels;
-
 	}
 
 	public void removeDataModels(Long[] ids) {
