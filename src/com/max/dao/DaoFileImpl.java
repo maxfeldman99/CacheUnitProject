@@ -59,7 +59,8 @@ public class DaoFileImpl<T> extends java.lang.Object implements IDao<Long, DataM
 		try {
 			if(hashMap.containsKey(entity.getDataModelId())) {
 				openOutStream();
-				hashMap.remove(entity.getDataModelId(), entity); // only makes null , its don
+				hashMap.remove(entity.getDataModelId(), entity.getContent()); // only makes null , its don
+				
 			}
 		
 		} finally {

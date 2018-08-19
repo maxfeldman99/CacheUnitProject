@@ -35,6 +35,6 @@ public class DataModel<T> extends Object implements Serializable
 	public String toString() {
 		return "DataModel [id=" + id + ", content=" + content + "]";
 	}
-	
+		
 
 }
