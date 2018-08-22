@@ -27,7 +27,7 @@ public class CacheUnit<T> {
 
 		for (int i = 0; i < ids.length; i++) {
 			dataModel = iAlgoCache.getElement(ids[i]); // if we have an id so we get it by id
-			
+
 //			if(dataModel==null) {
 //				dataModel = dao.find(ids[i]);
 //				if(dataModel != null) {
@@ -36,12 +36,11 @@ public class CacheUnit<T> {
 //				}
 //				models[i] = dataModel;
 //			}
-			
-			
+
 			if (dataModel != null) { // if in cache
 				models[i] = dataModel; // add to my array
 			} else {
-				
+
 				if (dao.find(ids[i]) == null) { // if not in cache
 					iAlgoCache.putElement(dataModel.getDataModelId(), dataModel);// and we use it by paging algorithm
 				} else {
@@ -57,10 +56,18 @@ public class CacheUnit<T> {
 	}
 
 	public DataModel<T>[] putDataModels(DataModel<T>[] datamodels) {
+		DataModel<T> myModel;
+		int nullCounter = 0;
 		for (int i = 0; i < datamodels.length; i++) {
-
-			iAlgoCache.putElement(datamodels[i].getDataModelId(), datamodels[i]);
+			
+			myModel = iAlgoCache.putElement(datamodels[i].getDataModelId(), datamodels[i]);
+			if(myModel == null) {
+				nullCounter++;
+			}
 			dao.save(datamodels[i]);
+		}
+		if(nullCounter == datamodels.length) {
+			return null;
 		}
 		return datamodels;
 	}
