@@ -1,5 +1,24 @@
 package com.max.services;
 
-public class CacheUnitController {
+import com.max.dm.DataModel;
 
+public class CacheUnitController<T> {
+
+	CacheUnitController(){
+		
+	}
+	
+	boolean delete(DataModel<T>[] dataModels) {
+		return false;
+	}
+	
+	DataModel<T>[] get(DataModel<T>[] dataModels) {
+		return dataModels;
+		
+	}
+	
+	boolean update(DataModel<T>[] dataModels) {
+		return false;
+		
+	}
 }
