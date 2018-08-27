@@ -17,100 +17,100 @@ public class DaoFileImpl<T> extends java.lang.Object implements IDao<Long, DataM
 	ObjectInputStream inputStream = null;
 	ObjectOutputStream outputStream = null;
 	LinkedHashMap<Long, DataModel<T>> hashMap; // to hold our data from file
-	
 
 	public DaoFileImpl(String filePath) {
-		this.filePath = filePath; //"DataSource.txt"
+		this.filePath = filePath;
 		hashMap = new LinkedHashMap<>();
 	}
-	
-	public DaoFileImpl(){
-        filePath = "outFile.txt";
-        
-    }
-	
+
+	public DaoFileImpl(String filePath, int capacity) {
+		this.filePath = filePath;
+		hashMap = new LinkedHashMap<>(capacity);
+	}
 
 	@Override
 	public void save(DataModel<T> entity) {
 		try {
 			openInStream(); // first , we need to update our hashMap
-			
-			if(entity!=null) {
-			hashMap.put(entity.getDataModelId(), entity);
-			openOutStream();
+
+			if (entity != null) {
+				hashMap.put(entity.getDataModelId(), entity);
+				openOutStream();
 			}
-			
+
 		} finally {
 			closeStreamSafe();
 		}
-		
-		//write on my database
-		//open output
-		//write
-		//close
-		
-		
+
+		// write on my database
+		// open output
+		// write
+		// close
 
 	}
 
 	@Override
 	public void delete(DataModel<T> entity) throws IllegalArgumentException {
-		
+		openInStream();
 		try {
-			if(hashMap.containsKey(entity.getDataModelId())) {
+			if (hashMap.containsKey(entity.getDataModelId()) && hashMap.get(entity.getDataModelId()) != null) {
 				openOutStream();
-				hashMap.remove(entity.getDataModelId(), entity.getContent()); // only makes null , its don
-				
+				// hashMap.remove(entity.getDataModelId(), entity.getContent()); // only makes
+				// null , its don
+				hashMap.put(entity.getDataModelId(), null);
+
 			}
-		
+
 		} finally {
 			closeStreamSafe();
 		}
-		//open output
+		// open output
 		// delete from map
-		//update  stream
-		//close
+		// update stream
+		// close
 	}
 
 	@Override
 	public DataModel<T> find(Long id) throws IllegalArgumentException {
-		
+
 		try {
 			openInStream();
-			if(hashMap.containsKey(id)) {
+			if (hashMap.containsKey(id)) {
 				return hashMap.get(id);
-				
-			}else {
+
+			} else {
 				return null;
 			}
-		
+
 		} finally {
 			closeStreamSafe();
 		}
-		
+
 	}
 
 	private void openInStream() { // to read from our file
 		try {
 			inputStream = new ObjectInputStream(new FileInputStream(filePath));
-			hashMap = (LinkedHashMap<Long, DataModel<T>>) inputStream.readObject(); //hashMap receives my data
-			
+			hashMap = (LinkedHashMap<Long, DataModel<T>>) inputStream.readObject(); // hashMap receives my data
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	private void openOutStream() { //  to write to our file
+
+	private void openOutStream() { // to write to our file
 		try {
 			outputStream = new ObjectOutputStream(new FileOutputStream(filePath, false));
-			outputStream.writeObject(hashMap); //hashMap receives my data
-			
+			outputStream.writeObject(hashMap); // hashMap receives my data
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	private void closeStreamSafe() { // each time we use in/out streams we will eventually close the streams inside finally
+
+	private void closeStreamSafe() { // each time we use in/out streams we will eventually close the streams inside
+										// finally
 		try {
 			if (inputStream != null)
 				inputStream.close();
@@ -118,13 +118,10 @@ public class DaoFileImpl<T> extends java.lang.Object implements IDao<Long, DataM
 		}
 		try {
 			if (outputStream != null)
-				outputStream.close();
+				outputStream.flush();
+			outputStream.close();
 		} catch (IOException e) {
 		}
 	}
-	
-		
-		
-	}
 
-
+}

@@ -38,13 +38,16 @@ public class CacheUnit<T> {
 //			}
 
 			if (dataModel != null) { // if in cache
-				models[i] = dataModel; // add to my array
-			} else {
+				models[i] = dataModel; 
+			} else { // else get if from file by dao
 
-				if (dao.find(ids[i]) == null) { // if not in cache
-					iAlgoCache.putElement(dataModel.getDataModelId(), dataModel);// and we use it by paging algorithm
-				} else {
+				if (dao.find(ids[i]) == null) { // this option is not relevant but i'm using it just for safety
+					models[i] = null; 
+				}
+				if(dao.find(ids[i])!=null){
+					dataModel = dao.find(ids[i]);
 					dao.save(dataModel);
+					iAlgoCache.putElement(dataModel.getDataModelId(), dataModel);  // and save it back to cache
 					models[i] = dataModel;
 				}
 
@@ -80,7 +83,7 @@ public class CacheUnit<T> {
 			iAlgoCache.removeElement(ids[i]);
 
 			if (dataModel != null) {
-				dao.delete(dataModel);
+				//dao.delete(dataModel);
 			}
 		}
 	}
