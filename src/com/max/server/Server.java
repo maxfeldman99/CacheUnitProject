@@ -11,8 +11,8 @@ import java.net.Socket;
 
 public class Server implements PropertyChangeListener,Runnable {
 	
-	public static final int TIME_OUT_TIME = 10000;
-	public static final int PORT = 12345;
+	private static final int TIME_OUT_TIME = 10000;
+	private static final int PORT = 12345;
 
 	public Server() {
 		
