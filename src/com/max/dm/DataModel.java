@@ -3,7 +3,7 @@ package com.max.dm;
 import java.io.Serializable;
 import java.lang.Long;
 
-public class DataModel<T> extends Object implements Serializable {
+public class DataModel<T> implements Serializable {
 	private Long id;
 	private T content;
 

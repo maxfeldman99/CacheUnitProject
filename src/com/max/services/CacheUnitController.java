@@ -4,7 +4,7 @@ import com.max.dm.DataModel;
 
 public class CacheUnitController<T> {
 
-	CacheUnitController(){
+	public CacheUnitController(){
 		
 	}
 	

@@ -11,7 +11,7 @@ import java.util.LinkedHashMap;
 
 import com.max.dm.DataModel;
 
-public class DaoFileImpl<T> extends java.lang.Object implements IDao<Long, DataModel<T>> {
+public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
 
 	String filePath;
 	ObjectInputStream inputStream = null;
