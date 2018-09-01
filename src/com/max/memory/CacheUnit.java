@@ -20,7 +20,7 @@ public class CacheUnit<T> {
 		this.dao = dao;
 	}
 
-	public DataModel<T>[] getDataModels(Long[] ids) throws ClassNotFoundException, IOException {
+	public DataModel<T>[] getDataModels(Long[] ids)  {
 
 		DataModel<T>[] models = new DataModel[ids.length];
 		DataModel<T> dataModel;
