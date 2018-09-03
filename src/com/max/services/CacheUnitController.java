@@ -10,16 +10,16 @@ public class CacheUnitController<T> {
 		
 	}
 	
-	boolean delete(DataModel<T>[] dataModels) {
+	public boolean delete(DataModel<T>[] dataModels) {
 		return cacheUnitService.delete(dataModels);
 	}
 	
-	DataModel<T>[] get(DataModel<T>[] dataModels) {
+	public DataModel<T>[] get(DataModel<T>[] dataModels) {
 		return cacheUnitService.get(dataModels);
 		
 	}
 	
-	boolean update(DataModel<T>[] dataModels) {
+	public boolean update(DataModel<T>[] dataModels) {
 		return cacheUnitService.update(dataModels);
 		
 	}
