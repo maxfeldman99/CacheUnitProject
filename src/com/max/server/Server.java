@@ -9,22 +9,25 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Server implements PropertyChangeListener,Runnable {
-	
+//Our observer
+
+public class Server implements PropertyChangeListener, Runnable {
+
 	private static final int TIME_OUT_TIME = 10000;
 	private static final int PORT = 12345;
-	private static final String AA = "aa";
+	private String message;
 
 	public Server() {
-		
+
 	}
-	public void propertyChange(PropertyChangeEvent evt) {
-		
+
+	public void propertyChange(PropertyChangeEvent evt) { 
+		this.message = (String) evt.getNewValue(); // not sure
 	}
 
 	@Override
 	public void run() {
-		
+
 		try {
 			ServerSocket serverSocket = new ServerSocket(PORT);
 			Socket socket = serverSocket.accept();
@@ -33,21 +36,18 @@ public class Server implements PropertyChangeListener,Runnable {
 			ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
 			objectOutputStream.writeObject("something");
 			objectOutputStream.flush();
-			String inputMsg=(String)objectInputStream.readObject();
-			System.out.println("message from the client: "+inputMsg);
+			String inputMsg = (String) objectInputStream.readObject();
+			System.out.println("message from the client: " + inputMsg);
 			objectOutputStream.writeObject("closing conneciton");
 			objectOutputStream.flush();
 			socket.close();
 			serverSocket.close();
-			
-			
-			
-			
+
 		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 }

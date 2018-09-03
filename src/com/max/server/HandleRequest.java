@@ -7,9 +7,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import com.max.dm.DataModel;
 import com.max.services.CacheUnitController;
+
+
 import java.lang.reflect.Type;
 
 
@@ -27,8 +30,8 @@ public class HandleRequest<T> implements Runnable {
 	@Override
 	public void run() {
 		try {
-			
-			Socket socket = new Socket("localhost", PORT);
+			InetAddress address = InetAddress.getLocalHost();
+			Socket socket = new Socket(address, PORT);
 			ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
 			ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
 			String msgFromServer = (String) objectInputStream.readObject(); // need to be replaced with request
@@ -45,7 +48,8 @@ public class HandleRequest<T> implements Runnable {
 			
 			req = gson.fromJson(new FileReader("Request.json"), Request.class); // not sure what file reader should receive
 			Type ref = new TypeToken<Request<DataModel<T>[]>>(){}.getType(); // must
-			Request<DataModel<T>[]> request = new Gson().fromJson(req, ref); // must
+			
+			//Request<DataModel<T>[]> request = new Gson().fromJson(req, ref); // must
 			
 			
 			
