@@ -41,32 +41,28 @@ public class CLI implements Runnable {
 	// state of the observable changes
 
 	public void write(String string) {
-		//support.firePropertyChange("property", this.string, string);  //not sure about what write method should do
-	}					  //"name of  property" , old value  , new value
-
-	private void print(String string) {
 		System.out.println(builder.append(string));
 		builder.delete(0, string.length());
-		
 	}
+
 
 	@Override
 	public void run() {
 
-		print(ENTER_COMMAND);
+		write(ENTER_COMMAND);
 		// printWriter.println(ENTER_COMMAND);
 		String input = scanner.nextLine();
 		while (!input.equalsIgnoreCase("stop")) {
 			// printWriter.println (ENTER_COMMAND);
 			// input = scanner.nextLine ();
 			if (input.equals("start")) {
-				print(STARTING);
+				write(STARTING);
 			} else if (!input.equals("stop")) {
-				print(INVALID);
+				write(INVALID);
 			}
 			input = scanner.nextLine();
 		}
-		print(SHUTDOWN);
+		write(SHUTDOWN);
 		scanner.close();
 
 	}

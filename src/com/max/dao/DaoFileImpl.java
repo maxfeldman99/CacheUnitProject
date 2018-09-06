@@ -32,7 +32,6 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
 	public void save(DataModel<T> entity) {
 		try {
 			openInStream(); // first , we need to update our hashMap
-
 			if (entity != null) {
 				hashMap.put(entity.getDataModelId(), entity);
 				openOutStream();
