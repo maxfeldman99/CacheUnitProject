@@ -42,11 +42,6 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
 			closeStreamSafe();
 		}
 
-		// write on my database
-		// open output
-		// write
-		// close
-
 	}
 
 	@Override
@@ -55,27 +50,21 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
 		try {
 			if (hashMap.containsKey(entity.getDataModelId()) && hashMap.get(entity.getDataModelId()) != null) {
 				openOutStream();
-				// hashMap.remove(entity.getDataModelId(), entity.getContent()); // only makes
-				// null , its don
-				hashMap.put(entity.getDataModelId(), null);
+				DataModel<T> nullModel = new DataModel(entity.getDataModelId(), null);
+				hashMap.put(entity.getDataModelId(), nullModel); // we set the current id content as null;
 
 			}
 
 		} finally {
 			closeStreamSafe();
 		}
-		// open output
-		// delete from map
-		// update stream
-		// close
 	}
 
 	@Override
 	public DataModel<T> find(Long id) throws IllegalArgumentException {
 
 		try {
-			openInStream();
-			if (hashMap.containsKey(id)) {
+			if ((hashMap.containsKey(id)) && (hashMap.get(id).getContent() != null)) {
 				return hashMap.get(id);
 
 			} else {
@@ -83,6 +72,14 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
 			}
 
 		} finally {
+
+			try {
+				outputStream = new ObjectOutputStream(new FileOutputStream(filePath, false));
+				outputStream.writeObject(hashMap);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 			closeStreamSafe();
 		}
 

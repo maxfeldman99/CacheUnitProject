@@ -46,8 +46,8 @@ class CacheUnitTest {
 		for (int i = 0; i < CAPACITY; i++) {
 			lru.removeElement(dataModels[i].getDataModelId());
 			dao.delete(dataModels[i]);
-			//assertEquals(null, dao.find(dataModels[i].getDataModelId()));  		// need to choose 1 between this two
-			//assertEquals(null, lru.getElement(dataModels[i].getDataModelId()));
+			assertEquals(null, dao.find(dataModels[i].getDataModelId()));
+			
 
 		}
 	}
@@ -109,7 +109,7 @@ class CacheUnitTest {
 			for (int i = 0; i < dataModels.length; i++) {
 				dao.delete(dataModels[i]);
 				myModel = dao.find(dataModels[i].getDataModelId());
-				//assertEquals(null, myModel,"checking if model was removed");
+				assertEquals(null, myModel,"checking if model was removed");
 			}
 		}
 

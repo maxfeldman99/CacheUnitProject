@@ -22,6 +22,7 @@ public class HandleRequest<T> implements Runnable {
 	private static final String GET = "GET";
 	private static final String DEL = "DELETE";
 	private static final String UPDATE = "UPDATE";
+	private static final String ACTION = "action";
 
 	HandleRequest(Socket s, CacheUnitController<T> controller) {
 		this.socket = s;
@@ -31,8 +32,8 @@ public class HandleRequest<T> implements Runnable {
 	@Override
 	public void run() {
 		try {
-			InetAddress address = InetAddress.getLocalHost();
-			Socket socket = new Socket(address, PORT);
+//			InetAddress address = InetAddress.getLocalHost();
+//			Socket socket = new Socket(address, PORT);
 
 			new HandleRequest<String>(socket, new CacheUnitController<String>());
 
@@ -42,7 +43,7 @@ public class HandleRequest<T> implements Runnable {
 			OutputStream = new ObjectOutputStream(socket.getOutputStream());
 			inputStream = new ObjectInputStream(socket.getInputStream());
 
-			String req = (String) inputStream.readObject(); // not sure
+			String req = (String) inputStream.readObject();
 			Type ref = new TypeToken<Request<DataModel<T>[]>>() {
 			}.getType();
 			Request<DataModel<T>[]> request = new Gson().fromJson(req, ref);
@@ -50,33 +51,36 @@ public class HandleRequest<T> implements Runnable {
 			Map<String, String> map = request.getHeaders();
 			DataModel<T>[] requestModels = request.getBody();
 			DataModel<T>[] resultModels = null;
-			boolean requstResult = false;
+			boolean requestResult = false;
 
-			String requestAction = map.get("action");
+			String requestAction = map.get(ACTION);
+
 			switch (requestAction) {
 			case GET:
 				resultModels = controller.get(requestModels);
-				if (resultModels != null) {
-					requstResult = true;
+				if (resultModels != null) { // if there is nothing to return the result will be false
+					requestResult = true;
+
 				}
 				break;
 			case DEL:
-				requstResult = controller.delete(requestModels);
+				requestResult = controller.delete(requestModels);
 				break;
 			case UPDATE:
-				requstResult = controller.update(requestModels);
+				requestResult = controller.update(requestModels);
 				break;
 			}
 
-			// String requestAction = map.get("action");
+			Gson gson = new Gson(); // this section will convert our data to JSON and send it
+			String toSend;
+			if (requestModels != null && requestAction.equals(ACTION)) {
+				toSend = gson.toJson(resultModels);
+			} else {
+				toSend = gson.toJson(requestResult);
+			}
+			OutputStream.writeObject(toSend);
+			System.out.println("message from server: " + toSend);
 
-			// HashMap<String, String> hashMap = new HashMap<>();
-
-			// hashMap = request.getHeaders();
-
-			System.out.println("message from server: " + request);
-
-			OutputStream.writeObject("someThing");
 			OutputStream.flush();
 			inputStream.close();
 			OutputStream.close();

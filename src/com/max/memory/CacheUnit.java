@@ -83,7 +83,7 @@ public class CacheUnit<T> {
 			iAlgoCache.removeElement(ids[i]);
 
 			if (dataModel != null) {
-				//dao.delete(dataModel);
+				dao.delete(dataModel);
 			}
 		}
 	}
