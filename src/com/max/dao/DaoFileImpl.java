@@ -29,11 +29,11 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
 	}
 
 	@Override
-	public void save(DataModel<T> entity) {
+	public void save(DataModel<T> t) {
 		try {
 			openInStream(); // first , we need to update our hashMap
-			if (entity != null) {
-				hashMap.put(entity.getDataModelId(), entity);
+			if (t != null) {
+				hashMap.put(t.getDataModelId(), t);
 				openOutStream();
 			}
 
@@ -44,13 +44,13 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
 	}
 
 	@Override
-	public void delete(DataModel<T> entity) throws IllegalArgumentException {
+	public void delete(DataModel<T> t) throws IllegalArgumentException {
 		openInStream();
 		try {
-			if (hashMap.containsKey(entity.getDataModelId()) && hashMap.get(entity.getDataModelId()) != null) {
+			if (hashMap.containsKey(t.getDataModelId()) && hashMap.get(t.getDataModelId()) != null) {
 				openOutStream();
-				DataModel<T> nullModel = new DataModel(entity.getDataModelId(), null);
-				hashMap.put(entity.getDataModelId(), nullModel); // we set the current id content as null;
+				DataModel<T> nullModel = new DataModel(t.getDataModelId(), null);
+				hashMap.put(t.getDataModelId(), nullModel); // we set the current id content as null;
 
 			}
 
@@ -61,7 +61,11 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
 
 	@Override
 	public DataModel<T> find(Long id) throws IllegalArgumentException {
-
+			
+		if(id==null) {
+			throw new IllegalArgumentException();
+		}
+			
 		try {
 			if ((hashMap.containsKey(id)) && (hashMap.get(id).getContent() != null)) {
 				return hashMap.get(id);
