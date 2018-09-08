@@ -63,7 +63,7 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
 	public DataModel<T> find(Long id) throws IllegalArgumentException {
 			
 		if(id==null) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(); // making sure no null id was given;
 		}
 			
 		try {

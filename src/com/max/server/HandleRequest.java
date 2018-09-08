@@ -79,7 +79,7 @@ public class HandleRequest<T> implements Runnable {
 				toSend = gson.toJson(requestResult);
 			}
 			OutputStream.writeObject(toSend);
-			System.out.println("message from server: " + toSend);
+			System.out.println("message from server: " + toSend);  // just for test
 
 			OutputStream.flush();
 			inputStream.close();
