@@ -21,11 +21,12 @@ class CacheUnitTest {
 	// private Integer randomNum = (int) (Math.random() * CAPACITY);
 	public static IAlgoCache<Long, DataModel<Integer>> lru = new LRUAlgoCacheImpl<>(CAPACITY/2);
 	public static DaoFileImpl<Integer> dao = new DaoFileImpl<>("DataSource.txt",CAPACITY);
-	public static CacheUnit<Integer> cacheUnit = new CacheUnit(lru, dao); // this object is using all 3 as requested
+	public static CacheUnit<Integer> cacheUnit = new CacheUnit(lru);
 	public static Long[] ids = new Long[CAPACITY];
 	public static Integer[] nullArray = new Integer[CAPACITY];
 	public static DataModel<Integer>[] dataModels = new DataModel[CAPACITY];
 	public static DataModel<Integer> myModel = null;
+	
 
 	@Test
 	@BeforeAll
