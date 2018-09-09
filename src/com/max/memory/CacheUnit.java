@@ -2,7 +2,6 @@ package com.max.memory;
 
 import com.max.algorithm.IAlgoCache;
 import com.max.dm.DataModel;
-import java.io.Serializable;
 import java.lang.Long;
 
 public class CacheUnit<T> {

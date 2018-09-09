@@ -52,25 +52,22 @@ public class CacheUnitService<T> {
 
 	public boolean update(DataModel<T>[] dataModels) {
 		boolean isUpdated = false;
-		DataModel<T>[] dataModelsUpdated = null;
-
-		dataModelsUpdated = cacheUnit.putDataModels(dataModels);
-		if (dataModelsUpdated != null) {
-			isUpdated = true;
-		}
-
-		return isUpdated;
-
-	}
-
-	private Long[] getModelIds(DataModel<T>[] dataModels) {
-
+		DataModel<T>[] cacheModels = null;
 		Long ids[] = new Long[dataModels.length];
 
 		for (int i = 0; i < dataModels.length; i++) {
 			ids[i] = dataModels[i].getDataModelId();
 		}
-		return ids;
+		cacheModels = cacheUnit.getDataModels(ids);
+
+		for (int i = 0; i < cacheModels.length; i++) {
+			if (cacheModels[i].getContent() != dataModels[i].getContent()) { 
+				isUpdated = true;  // if one of the values is not same as cache values then its updated
+			}
+		}
+		cacheUnit.putDataModels(dataModels);
+
+		return isUpdated;
 
 	}
 
