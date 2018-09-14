@@ -1,7 +1,10 @@
-package com.max.server;
+package com.hit.server;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.hit.dm.DataModel;
+import com.hit.services.CacheUnitController;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -9,9 +12,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.max.dm.DataModel;
-import com.max.services.CacheUnitController;
 import java.lang.reflect.Type;
 
 public class HandleRequest<T> implements Runnable {

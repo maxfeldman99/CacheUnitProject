@@ -1,7 +1,8 @@
-package com.max.memory;
+package com.hit.memory;
 
+import com.hit.dm.DataModel;
 import com.max.algorithm.IAlgoCache;
-import com.max.dm.DataModel;
+
 import java.lang.Long;
 
 public class CacheUnit<T> {

@@ -1,4 +1,4 @@
-package com.max.dao;
+package com.hit.dao;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,7 +9,7 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import com.max.dm.DataModel;
+import com.hit.dm.DataModel;
 
 public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
 

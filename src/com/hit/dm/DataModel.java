@@ -1,4 +1,4 @@
-package com.max.dm;
+package com.hit.dm;
 
 import java.io.Serializable;
 import java.lang.Long;

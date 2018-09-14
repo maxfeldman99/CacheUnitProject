@@ -1,4 +1,4 @@
-package com.max.server;
+package com.hit.server;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

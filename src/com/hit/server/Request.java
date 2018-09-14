@@ -1,4 +1,4 @@
-package com.max.server;
+package com.hit.server;
 
 import java.io.Serializable;
 import java.util.Map;

@@ -9,10 +9,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import com.hit.dao.DaoFileImpl;
+import com.hit.dm.DataModel;
+import com.hit.memory.CacheUnit;
 import com.max.algorithm.IAlgoCache;
 import com.max.algorithm.LRUAlgoCacheImpl;
-import com.max.dao.DaoFileImpl;
-import com.max.dm.DataModel;
 
 @DisplayName("CacheUnit Test")
 class CacheUnitTest {

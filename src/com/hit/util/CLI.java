@@ -1,4 +1,4 @@
-package com.max.util;
+package com.hit.util;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-import com.max.server.Server;
+import com.hit.server.Server;
 
 //our observable
 

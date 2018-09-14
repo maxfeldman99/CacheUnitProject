@@ -1,6 +1,6 @@
-package com.max.services;
+package com.hit.services;
 
-import com.max.dm.DataModel;
+import com.hit.dm.DataModel;
 
 public class CacheUnitController<T> {
 	

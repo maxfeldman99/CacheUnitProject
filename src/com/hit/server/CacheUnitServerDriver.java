@@ -1,6 +1,6 @@
-package com.max.server;
+package com.hit.server;
 
-import com.max.util.CLI;
+import com.hit.util.CLI;
 
 public class CacheUnitServerDriver {
 

@@ -1,10 +1,10 @@
-package com.max.services;
+package com.hit.services;
 
 import java.io.Serializable;
 
-import com.max.dao.IDao;
-import com.max.dm.DataModel;
-import com.max.memory.CacheUnit;
+import com.hit.dao.IDao;
+import com.hit.dm.DataModel;
+import com.hit.memory.CacheUnit;
 
 public class CacheUnitService<T> {
 

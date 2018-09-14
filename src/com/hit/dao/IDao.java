@@ -1,4 +1,4 @@
-package com.max.dao;
+package com.hit.dao;
 
 import java.lang.IllegalArgumentException;
 import java.io.Serializable;
