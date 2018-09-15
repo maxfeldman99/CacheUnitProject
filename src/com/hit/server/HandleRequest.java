@@ -23,6 +23,8 @@ public class HandleRequest<T> implements Runnable {
 	private static final String DEL = "DELETE";
 	private static final String UPDATE = "UPDATE";
 	private static final String ACTION = "action";
+	private ObjectInputStream inputStream = null;
+	private ObjectOutputStream outputStream = null;
 
 	HandleRequest(Socket s, CacheUnitController<T> controller) {
 		this.socket = s;
@@ -34,13 +36,8 @@ public class HandleRequest<T> implements Runnable {
 		try {
 //			InetAddress address = InetAddress.getLocalHost();
 //			Socket socket = new Socket(address, PORT);
-
 			new HandleRequest<String>(socket, new CacheUnitController<String>());
-
-			ObjectInputStream inputStream = null;
-			ObjectOutputStream OutputStream = null;
-
-			OutputStream = new ObjectOutputStream(socket.getOutputStream());
+			outputStream = new ObjectOutputStream(socket.getOutputStream());
 			inputStream = new ObjectInputStream(socket.getInputStream());
 
 			String req = (String) inputStream.readObject();
@@ -78,18 +75,31 @@ public class HandleRequest<T> implements Runnable {
 			} else {
 				toSend = gson.toJson(requestResult);
 			}
-			OutputStream.writeObject(toSend);
-			System.out.println("message from server: " + toSend);  // just for test
-
-			OutputStream.flush();
-			inputStream.close();
-			OutputStream.close();
-			socket.close();
+			outputStream.writeObject(toSend);
+			System.out.println("message from server: " + toSend); // just for test
+			outputStream.flush();
+	
 
 		} catch (IOException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
+		} finally { // finally as requested
+			
+			try {
+				if (inputStream != null)
+					inputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			try {
+				if (outputStream != null)
+					outputStream.flush();
+				outputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
+	
 }

@@ -13,10 +13,10 @@ import com.hit.dm.DataModel;
 
 public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
 
-	String filePath;
-	ObjectInputStream inputStream = null;
-	ObjectOutputStream outputStream = null;
-	LinkedHashMap<Long, DataModel<T>> hashMap; // to hold our data from file
+	private String filePath;
+	private ObjectInputStream inputStream = null;
+	private ObjectOutputStream outputStream = null;
+	private LinkedHashMap<Long, DataModel<T>> hashMap; // to hold our data from file
 
 	public DaoFileImpl(String filePath) {
 		this.filePath = filePath;
@@ -115,12 +115,14 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
 			if (inputStream != null)
 				inputStream.close();
 		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		try {
 			if (outputStream != null)
 				outputStream.flush();
 			outputStream.close();
 		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

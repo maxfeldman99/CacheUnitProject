@@ -16,12 +16,14 @@ public class Server implements PropertyChangeListener, Runnable {
 	private static final int TIME_OUT_TIME = 10000;
 	private static final int PORT = 12345;
 	private String message;
+	ObjectInputStream objectInputStream = null;
+	ObjectOutputStream objectOutputStream  = null;
 
 	public Server() {
 
 	}
 
-	public void propertyChange(PropertyChangeEvent evt) { 
+	public void propertyChange(PropertyChangeEvent evt) {
 		this.message = (String) evt.getNewValue(); // not sure
 	}
 
@@ -44,10 +46,19 @@ public class Server implements PropertyChangeListener, Runnable {
 			serverSocket.close();
 
 		} catch (IOException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
+		} finally {
+			try {
+				if (objectOutputStream != null)
+					objectOutputStream.flush();
+				objectOutputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
+
 
 }

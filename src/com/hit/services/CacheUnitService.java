@@ -70,5 +70,9 @@ public class CacheUnitService<T> {
 		return isUpdated;
 
 	}
+	
+	public void getInfo() {
+		
+	}
 
 }
