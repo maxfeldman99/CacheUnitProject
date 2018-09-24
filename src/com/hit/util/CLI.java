@@ -45,25 +45,27 @@ public class CLI implements Runnable {
 		builder.delete(0, string.length());
 	}
 
-
 	@Override
 	public void run() {
+		while (true) {
+			write(ENTER_COMMAND);
+			// printWriter.println(ENTER_COMMAND);
+			String input = scanner.nextLine();
+			while (!input.equalsIgnoreCase("stop")) {
+				// printWriter.println (ENTER_COMMAND);
+				// input = scanner.nextLine ();
+				if (input.equals("start")) {
+					write(STARTING);
+					Thread thread = new Thread(new Server());
+					thread.start();
 
-		write(ENTER_COMMAND);
-		// printWriter.println(ENTER_COMMAND);
-		String input = scanner.nextLine();
-		while (!input.equalsIgnoreCase("stop")) {
-			// printWriter.println (ENTER_COMMAND);
-			// input = scanner.nextLine ();
-			if (input.equals("start")) {
-				write(STARTING);
-			} else if (!input.equals("stop")) {
-				write(INVALID);
+				} else if (!input.equals("stop")) {
+					write(INVALID);
+				}
+				input = scanner.nextLine();
 			}
-			input = scanner.nextLine();
+			write(SHUTDOWN);
+			scanner.close();
 		}
-		write(SHUTDOWN);
-		scanner.close();
-
 	}
 }

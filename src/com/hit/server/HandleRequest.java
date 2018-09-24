@@ -18,13 +18,14 @@ public class HandleRequest<T> implements Runnable {
 
 	private Socket socket;
 	private CacheUnitController<T> controller;
+	private ObjectInputStream inputStream = null;
+	private ObjectOutputStream outputStream = null;
 	private static final int PORT = 12345;
 	private static final String GET = "GET";
 	private static final String DEL = "DELETE";
 	private static final String UPDATE = "UPDATE";
 	private static final String ACTION = "action";
-	private ObjectInputStream inputStream = null;
-	private ObjectOutputStream outputStream = null;
+
 
 	HandleRequest(Socket s, CacheUnitController<T> controller) {
 		this.socket = s;
@@ -36,6 +37,7 @@ public class HandleRequest<T> implements Runnable {
 		try {
 //			InetAddress address = InetAddress.getLocalHost();
 //			Socket socket = new Socket(address, PORT);
+//			
 			new HandleRequest<String>(socket, new CacheUnitController<String>());
 			outputStream = new ObjectOutputStream(socket.getOutputStream());
 			inputStream = new ObjectInputStream(socket.getInputStream());
@@ -92,9 +94,12 @@ public class HandleRequest<T> implements Runnable {
 				e.printStackTrace();
 			}
 			try {
-				if (outputStream != null)
+				if (outputStream != null) {
 					outputStream.flush();
-				outputStream.close();
+					outputStream.close();
+				}
+					
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
