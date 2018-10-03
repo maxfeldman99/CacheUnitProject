@@ -37,7 +37,7 @@ public class HandleRequest<T> implements Runnable {
 		try {
 //			InetAddress address = InetAddress.getLocalHost();
 //			Socket socket = new Socket(address, PORT);
-//			
+			
 			new HandleRequest<String>(socket, new CacheUnitController<String>());
 			outputStream = new ObjectOutputStream(socket.getOutputStream());
 			inputStream = new ObjectInputStream(socket.getInputStream());
@@ -53,7 +53,16 @@ public class HandleRequest<T> implements Runnable {
 			boolean requestResult = false;
 
 			String requestAction = map.get(ACTION);
-
+			
+			System.out.println("numner of models inside request is : "+requestModels.length);
+			for (int i = 0; i < requestModels.length; i++) {
+				System.out.println(requestModels[i].toString());
+				
+			}
+			
+			System.out.println(requestAction);
+			
+			
 			switch (requestAction) {
 			case GET:
 				resultModels = controller.get(requestModels);
@@ -77,9 +86,12 @@ public class HandleRequest<T> implements Runnable {
 			} else {
 				toSend = gson.toJson(requestResult);
 			}
+			
+			System.out.println("message from serveRRR: " + toSend); // just for test
 			outputStream.writeObject(toSend);
-			System.out.println("message from server: " + toSend); // just for test
-			outputStream.flush();
+			
+			//outputStream.flush();
+	
 	
 
 		} catch (IOException | ClassNotFoundException e) {
@@ -96,8 +108,9 @@ public class HandleRequest<T> implements Runnable {
 			try {
 				if (outputStream != null) {
 					outputStream.flush();
-					outputStream.close();
+					
 				}
+				outputStream.close();
 					
 				
 			} catch (IOException e) {

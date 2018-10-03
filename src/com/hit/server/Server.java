@@ -18,7 +18,7 @@ import com.hit.services.CacheUnitController;
 
 public class Server implements PropertyChangeListener, Runnable {
 
-	private static final int TIME_OUT_TIME = 10000;
+	//private static final int TIME_OUT_TIME = 10000;
 	private static final int PORT = 12345;
 	private static boolean SERVER_IS_ON = true;
 	private static final int MAX_CLIENTS = 10;
@@ -28,6 +28,8 @@ public class Server implements PropertyChangeListener, Runnable {
 	private Thread thread;
 	private  CacheUnitController<Request<String>> cacheUnitController;
 	private ThreadPoolExecutor threadPoolExecutor;
+	ServerSocket serverSocket;
+	Socket socket;
 
 	public Server() {
 		cacheUnitController = new CacheUnitController<Request<String>> (); // maybe not needed in this position
@@ -43,12 +45,12 @@ public class Server implements PropertyChangeListener, Runnable {
 
 		while (SERVER_IS_ON) {
 			try {
-				ServerSocket serverSocket = new ServerSocket(PORT);
-				Socket socket = serverSocket.accept();
-				serverSocket.setSoTimeout(TIME_OUT_TIME);
+				serverSocket = new ServerSocket(PORT);
+				socket = serverSocket.accept();
+				//serverSocket.setSoTimeout(TIME_OUT_TIME);
 				ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
 				ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-				objectOutputStream.writeObject("something");
+				objectOutputStream.writeObject(" You are Connected! ");
 				objectOutputStream.flush();
 				
 
@@ -60,14 +62,15 @@ public class Server implements PropertyChangeListener, Runnable {
 				thread = new Thread(new HandleRequest<Request<String>>(socket,cacheUnitController)); // not sure about the <> arguments
 				thread.start();
 				
-			
+				System.out.println(" number of activated threads " + threadPoolExecutor.getActiveCount());
 				
 				System.out.println("message from the client: " + inputMsg);
 				objectOutputStream.writeObject("closing conneciton");
 				objectOutputStream.flush();
-				socket.close();
-				serverSocket.close();
+				
 				threadPoolExecutor.submit(thread);
+				
+				System.out.println(" number of activated threads " + threadPoolExecutor.getActiveCount());
 
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
@@ -76,9 +79,11 @@ public class Server implements PropertyChangeListener, Runnable {
 				try {
 					if (objectOutputStream != null) {
 						objectOutputStream.flush();
-						
+						objectOutputStream.close(); // not sure if supposed to be inside the if statement, generates an error sometimes
+						socket.close();
+					    serverSocket.close();
 					}
-					objectOutputStream.close(); // maybe should be inside the if statment above
+					
 					
 					
 				} catch (IOException e) {

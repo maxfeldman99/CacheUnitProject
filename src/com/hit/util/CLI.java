@@ -22,7 +22,8 @@ public class CLI implements Runnable {
 	private static final String SHUTDOWN = "shutdown server";
 	private static final String INVALID = "unknown command";
 	private static final String ENTER_COMMAND = "Please Enter Your Command: ";
-
+	private Thread thread;
+	
 	public CLI(InputStream in, OutputStream out) {
 
 		scanner = new Scanner(in);
@@ -56,16 +57,19 @@ public class CLI implements Runnable {
 				// input = scanner.nextLine ();
 				if (input.equals("start")) {
 					write(STARTING);
-					Thread thread = new Thread(new Server());
+					thread = new Thread(new Server());
 					thread.start();
 
 				} else if (!input.equals("stop")) {
 					write(INVALID);
+					
 				}
 				input = scanner.nextLine();
 			}
 			write(SHUTDOWN);
-			scanner.close();
+//			scanner.close();
+		
 		}
+	
 	}
 }
