@@ -23,6 +23,7 @@ public class CLI implements Runnable {
 	private static final String INVALID = "unknown command";
 	private static final String ENTER_COMMAND = "Please Enter Your Command: ";
 	private Thread thread;
+	private static String SERVER= "on";
 	
 	public CLI(InputStream in, OutputStream out) {
 
@@ -67,6 +68,7 @@ public class CLI implements Runnable {
 				input = scanner.nextLine();
 			}
 			write(SHUTDOWN);
+			support.firePropertyChange(SERVER,SERVER,"off");
 //			scanner.close();
 		
 		}

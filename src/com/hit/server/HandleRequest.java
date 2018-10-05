@@ -5,10 +5,12 @@ import com.google.gson.reflect.TypeToken;
 import com.hit.dm.DataModel;
 import com.hit.services.CacheUnitController;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.HashMap;
@@ -36,25 +38,34 @@ public class HandleRequest<T> implements Runnable {
 
 	@Override
 	public void run() {
-		ObjectOutputStream outputStream = null;
-		ObjectInputStream inputStream = null;
+		OutputStreamWriter outputStream = null;
+		String req = null;
+		
 		try {
 //			InetAddress address = InetAddress.getLocalHost();
 //			Socket socket = new Socket(address, PORT);	
 			
 		//	new HandleRequest<String>(socket, new CacheUnitController<String>());
 			
+			Scanner reader = new Scanner(new InputStreamReader(socket.getInputStream()));
 			
-			outputStream = new ObjectOutputStream(socket.getOutputStream());
-			inputStream = new ObjectInputStream(socket.getInputStream());
+			//Scanner scanner = new Scanner(new InputStreamReader(socket.getInputStream()));
+			outputStream =new OutputStreamWriter(socket.getOutputStream());
+			//inputStream = new InputStreamReader(socket.getInputStream());
 			
-
-			String req = (String) inputStream.readObject();
+			while(reader.hasNextLine()){
+				 req = reader.nextLine();
+			}
+		
 			
+			System.out.println(req);
+	
 			Type ref = new TypeToken<Request<DataModel<T>[]>>() {
 			}.getType();
 			Request<DataModel<T>[]> request = new Gson().fromJson(req, ref);
+			
 
+			
 			Map<String, String> map = request.getHeaders();
 			DataModel<T>[] requestModels = request.getBody();
 			DataModel<T>[] resultModels = null;
@@ -62,7 +73,7 @@ public class HandleRequest<T> implements Runnable {
 
 			String requestAction = map.get(ACTION);
 			
-			System.out.println("numner of models inside request is : "+requestModels.length);
+			System.out.println("number of models inside request is : "+requestModels.length);
 			for (int i = 0; i < requestModels.length; i++) {
 				System.out.println(requestModels[i].toString());
 				
@@ -96,13 +107,14 @@ public class HandleRequest<T> implements Runnable {
 			}
 			
 			System.out.println("message from serveRRR: " + toSend); // just for test
-			outputStream.writeObject(toSend);
 			
-			//outputStream.flush();
+			outputStream.write(toSend);
+			
+			outputStream.flush();
 	
 	
 
-		} catch (IOException | ClassNotFoundException e) {
+		} catch (Exception e ) {
 			e.printStackTrace();
 			
 		}

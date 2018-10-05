@@ -22,7 +22,7 @@ public class Server implements PropertyChangeListener, Runnable {
 	private static final int PORT = 12345;
 	private static boolean SERVER_IS_ON = true;
 	private static final int MAX_CLIENTS = 10;
-	private String message;
+	private static String SERVER;
 	//private ObjectInputStream objectInputStream = null;
 //	private ObjectOutputStream objectOutputStream = null;
 	private Thread thread;
@@ -38,7 +38,7 @@ public class Server implements PropertyChangeListener, Runnable {
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
-		this.message = (String) evt.getNewValue(); // not sure
+		this.SERVER = (String) evt.getNewValue(); // not sure
 	}
 
 	@Override
@@ -69,15 +69,16 @@ public class Server implements PropertyChangeListener, Runnable {
 				thread = new Thread(new HandleRequest<Request<String>>(socket,cacheUnitController)); // not sure about the <> arguments
 				thread.start();
 				threadPoolExecutor.submit(thread);
-				System.out.println(" number of activated threads " + threadPoolExecutor.getActiveCount());
+			//	System.out.println(" number of activated threads " + threadPoolExecutor.getActiveCount());
 				
 				//System.out.println("message from the client: " + inputMsg);
 //				objectOutputStream.writeObject("closing conneciton");
 //				objectOutputStream.flush();
 			
 				
-				System.out.println(" number of activated threads " + threadPoolExecutor.getActiveCount());
+				//System.out.println(" number of activated threads " + threadPoolExecutor.getActiveCount());
 
+				
 			} catch (Exception  e) {
 				e.printStackTrace();
 
