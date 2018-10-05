@@ -6,20 +6,22 @@ import com.hit.dm.DataModel;
 import com.hit.services.CacheUnitController;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 import java.lang.reflect.Type;
 
 public class HandleRequest<T> implements Runnable {
 
 	private Socket socket;
-	private CacheUnitController<T> controller;
-	private ObjectInputStream inputStream = null;
-	private ObjectOutputStream outputStream = null;
+	private CacheUnitController<T> controller;  // <T> after cuc?
+
+	
 	private static final int PORT = 12345;
 	private static final String GET = "GET";
 	private static final String DEL = "DELETE";
@@ -27,22 +29,28 @@ public class HandleRequest<T> implements Runnable {
 	private static final String ACTION = "action";
 
 
-	HandleRequest(Socket s, CacheUnitController<T> controller) {
+	public HandleRequest(Socket s, CacheUnitController<T> controller) {
 		this.socket = s;
 		this.controller = controller;
 	}
 
 	@Override
 	public void run() {
+		ObjectOutputStream outputStream = null;
+		ObjectInputStream inputStream = null;
 		try {
 //			InetAddress address = InetAddress.getLocalHost();
-//			Socket socket = new Socket(address, PORT);
+//			Socket socket = new Socket(address, PORT);	
 			
-			new HandleRequest<String>(socket, new CacheUnitController<String>());
+		//	new HandleRequest<String>(socket, new CacheUnitController<String>());
+			
+			
 			outputStream = new ObjectOutputStream(socket.getOutputStream());
 			inputStream = new ObjectInputStream(socket.getInputStream());
+			
 
 			String req = (String) inputStream.readObject();
+			
 			Type ref = new TypeToken<Request<DataModel<T>[]>>() {
 			}.getType();
 			Request<DataModel<T>[]> request = new Gson().fromJson(req, ref);
@@ -97,26 +105,28 @@ public class HandleRequest<T> implements Runnable {
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 			
-		} finally { // finally as requested
-			
-			try {
-				if (inputStream != null)
-					inputStream.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			try {
-				if (outputStream != null) {
-					outputStream.flush();
-					
-				}
-				outputStream.close();
-					
-				
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
+		
+//		finally { // finally as requested
+//			
+//			try {
+//				if (inputStream != null)
+//					inputStream.close();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			try {
+//				if (outputStream != null) {
+//					outputStream.flush();
+//					
+//				}
+//				outputStream.close();
+//					
+//				
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		}
 
 	}
 	
