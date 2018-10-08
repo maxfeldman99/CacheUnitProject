@@ -14,7 +14,7 @@ import com.hit.server.Server;
 
 public class CLI implements Runnable {
 
-	private PropertyChangeSupport support = new PropertyChangeSupport(this);
+	private final PropertyChangeSupport support = new PropertyChangeSupport(this);
 	private Scanner scanner;
 	private PrintWriter printWriter;
 	private StringBuilder builder = new StringBuilder("");
@@ -23,7 +23,7 @@ public class CLI implements Runnable {
 	private static final String INVALID = "unknown command";
 	private static final String ENTER_COMMAND = "Please Enter Your Command: ";
 	private Thread thread;
-	private static String SERVER= "on";
+	private String serverStatus = "on";
 	
 	public CLI(InputStream in, OutputStream out) {
 
@@ -57,18 +57,18 @@ public class CLI implements Runnable {
 				// printWriter.println (ENTER_COMMAND);
 				// input = scanner.nextLine ();
 				if (input.equals("start")) {
+					support.firePropertyChange(serverStatus,"off","on");
 					write(STARTING);
 					thread = new Thread(new Server());
 					thread.start();
 
 				} else if (!input.equals("stop")) {
 					write(INVALID);
-					
 				}
 				input = scanner.nextLine();
 			}
 			write(SHUTDOWN);
-			support.firePropertyChange(SERVER,SERVER,"off");
+			support.firePropertyChange(serverStatus,"on","off");
 //			scanner.close();
 		
 		}

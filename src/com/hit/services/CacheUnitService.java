@@ -1,6 +1,7 @@
 package com.hit.services;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 import com.hit.dao.IDao;
 import com.hit.dm.DataModel;
@@ -11,19 +12,29 @@ public class CacheUnitService<T> {
 	private CacheUnit<T> cacheUnit;
 	private IDao<Serializable, T> dao;
 	private DataModel<T> dataModel = null;
+	
+	private int requestNum=1; // not sure 
+	private int modelsNum=0;
+	private final int cacheCapacitiy = 15;
+	private int numOfSwaps=0;
+	private String algoName;
+	private HashMap<String,String> unitStats = new HashMap<>();
+	
 
 	public CacheUnitService() {
-
+		algoName = "LRU";
+		requestNum=0;
 	}
 
 	boolean delete(DataModel<T>[] dataModels) {
 		boolean isDeleted = false;
 		Long ids[] = new Long[dataModels.length];
-
+		modelsNum =+ dataModels.length;
 		if (ids.length > 0) { // removing from file
 			for (int i = 0; i < dataModels.length; i++) {
 				dataModel = dataModels[i];
-				dao.delete((T) dataModel);
+				dao.delete(dataModel.getContent());
+				System.out.println("deleting model : "+dataModel.getDataModelId());
 				ids[i] = dataModel.getDataModelId();
 			}
 			cacheUnit.removeDataModels(ids); // removing from cache
@@ -36,6 +47,7 @@ public class CacheUnitService<T> {
 
 		DataModel<T>[] models = null;
 		Long ids[] = new Long[dataModels.length];
+		modelsNum =+ dataModels.length;
 		for (int i = 0; i < dataModels.length; i++) {
 			ids[i] = dataModels[i].getDataModelId();
 		}
@@ -54,25 +66,38 @@ public class CacheUnitService<T> {
 		boolean isUpdated = false;
 		DataModel<T>[] cacheModels = null;
 		Long ids[] = new Long[dataModels.length];
-
+		modelsNum =+ dataModels.length;
 		for (int i = 0; i < dataModels.length; i++) {
 			ids[i] = dataModels[i].getDataModelId();
+			System.out.println("the id is: "+ids[i]);
 		}
 		cacheModels = cacheUnit.getDataModels(ids);
 
 		for (int i = 0; i < cacheModels.length; i++) {
 			if (cacheModels[i].getContent() != dataModels[i].getContent()) { 
 				isUpdated = true;  // if one of the values is not same as cache values then its updated
+				System.out.println("model updated");
 			}
 		}
 		cacheUnit.putDataModels(dataModels);
 
+		System.out.println("updated status is : "+isUpdated);
 		return isUpdated;
+		
 
 	}
 	
-	public void getInfo() {
+	public  HashMap<String,String> getUnitStatistics() {
 		
-	}
+		unitStats.put("algo",algoName);
+		unitStats.put("capacity", String.valueOf(cacheCapacitiy));
+		unitStats.put("reqNum", String.valueOf(requestNum));
+		unitStats.put("modelsNum", String.valueOf(modelsNum));
+		
+		
+		
+		return unitStats;
+		
+	}	
 
 }

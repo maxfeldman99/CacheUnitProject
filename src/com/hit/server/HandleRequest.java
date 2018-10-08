@@ -1,145 +1,104 @@
 package com.hit.server;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.hit.dm.DataModel;
 import com.hit.services.CacheUnitController;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.io.*;
 import java.lang.reflect.Type;
+import java.net.Socket;
+import java.util.Map;
 
 public class HandleRequest<T> implements Runnable {
 
-	private Socket socket;
-	private CacheUnitController<T> controller;  // <T> after cuc?
+	private CacheUnitController<T> controller;
 
-	
-	private static final int PORT = 12345;
+	private Socket socket;
 	private static final String GET = "GET";
 	private static final String DEL = "DELETE";
 	private static final String UPDATE = "UPDATE";
 	private static final String ACTION = "action";
+	private static final String STATS = "statistics";
+	private StringBuilder builder = new StringBuilder("");
 
+	public HandleRequest(Socket socket, CacheUnitController<T> controller) {
 
-	public HandleRequest(Socket s, CacheUnitController<T> controller) {
-		this.socket = s;
 		this.controller = controller;
+		this.socket = socket;
+
 	}
 
 	@Override
 	public void run() {
-		OutputStreamWriter outputStream = null;
+		Gson gson = new GsonBuilder().create();
+		ObjectInputStream inputStream = null;
+		ObjectOutputStream outputStream = null;
 		String req = null;
-		
+		boolean requestResult = false;
+
 		try {
-//			InetAddress address = InetAddress.getLocalHost();
-//			Socket socket = new Socket(address, PORT);	
-			
-		//	new HandleRequest<String>(socket, new CacheUnitController<String>());
-			
-			Scanner reader = new Scanner(new InputStreamReader(socket.getInputStream()));
-			
-			//Scanner scanner = new Scanner(new InputStreamReader(socket.getInputStream()));
-			outputStream =new OutputStreamWriter(socket.getOutputStream());
-			//inputStream = new InputStreamReader(socket.getInputStream());
-			
-			while(reader.hasNextLine()){
-				 req = reader.nextLine();
-			}
-		
-			
-			System.out.println(req);
-	
+
+			inputStream = new ObjectInputStream(socket.getInputStream());
+			outputStream = new ObjectOutputStream(socket.getOutputStream());
+			req = (String) inputStream.readObject();
+
 			Type ref = new TypeToken<Request<DataModel<T>[]>>() {
 			}.getType();
-			Request<DataModel<T>[]> request = new Gson().fromJson(req, ref);
-			
-
-			
+			Request<DataModel<T>[]> request = gson.fromJson(req, ref);
 			Map<String, String> map = request.getHeaders();
 			DataModel<T>[] requestModels = request.getBody();
 			DataModel<T>[] resultModels = null;
-			boolean requestResult = false;
+
+			for (DataModel d : requestModels) {
+				System.out.println(d);
+			}
 
 			String requestAction = map.get(ACTION);
-			
-			System.out.println("number of models inside request is : "+requestModels.length);
-			for (int i = 0; i < requestModels.length; i++) {
-				System.out.println(requestModels[i].toString());
-				
-			}
-			
-			System.out.println(requestAction);
-			
-			
+			write("using the action : "+requestAction);
+
 			switch (requestAction) {
 			case GET:
 				resultModels = controller.get(requestModels);
 				if (resultModels != null) { // if there is nothing to return the result will be false
 					requestResult = true;
-
+					write("result of get is not null");
 				}
+				write("result of get is NULL - no such elements");
 				break;
+
 			case DEL:
 				requestResult = controller.delete(requestModels);
+				if (requestResult==true) {
+					write("deleted");
+					System.out.println("dasda");
+				} else {
+					write("not deleted");
+				}
 				break;
+
 			case UPDATE:
-				requestResult = controller.update(requestModels);
+				if (requestResult = controller.update(requestModels)) {
+					write("updated");
+				} else {
+					write("not updated");
+				}
+				break;
+			case STATS:
+			
 				break;
 			}
 
-			Gson gson = new Gson(); // this section will convert our data to JSON and send it
-			String toSend;
-			if (requestModels != null && requestAction.equals(ACTION)) {
-				toSend = gson.toJson(resultModels);
-			} else {
-				toSend = gson.toJson(requestResult);
-			}
-			
-			System.out.println("message from serveRRR: " + toSend); // just for test
-			
-			outputStream.write(toSend);
-			
-			outputStream.flush();
-	
-	
+		} catch (IOException | ClassNotFoundException e) {
 
-		} catch (Exception e ) {
 			e.printStackTrace();
-			
 		}
-		
-//		finally { // finally as requested
-//			
-//			try {
-//				if (inputStream != null)
-//					inputStream.close();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//			try {
-//				if (outputStream != null) {
-//					outputStream.flush();
-//					
-//				}
-//				outputStream.close();
-//					
-//				
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//		}
 
 	}
-	
+
+	private void write(String string) {
+		System.out.println(builder.append(string));
+		builder.delete(0, string.length());
+	}
+
 }

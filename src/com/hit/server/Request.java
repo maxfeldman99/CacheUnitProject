@@ -8,7 +8,7 @@ public class Request<T> implements Serializable {
 	private Map<String, String> headers;
 	private T body;
 
-	Request(Map<String, String> headers, T body) {
+	public Request(Map<String, String> headers, T body) {
 		this.headers = headers;
 		this.body = body;
 	}
@@ -34,6 +34,8 @@ public class Request<T> implements Serializable {
 	@Override
 	public String toString() {
 		return "Request [headers=" + headers + ", body=" + body + "]";
+		
+		
 	}
 
 }
