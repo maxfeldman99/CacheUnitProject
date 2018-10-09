@@ -1,5 +1,7 @@
 package com.hit.services;
 
+import java.util.HashMap;
+
 import com.hit.dm.DataModel;
 
 public class CacheUnitController<T> {
@@ -22,5 +24,9 @@ public class CacheUnitController<T> {
 	public boolean update(DataModel<T>[] dataModels) {
 		return cacheUnitService.update(dataModels);
 		
+	}
+	
+	public HashMap<String,String> getUnitStatistics(){
+		return cacheUnitService.getUnitStatistics();
 	}
 }

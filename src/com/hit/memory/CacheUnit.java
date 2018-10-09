@@ -2,13 +2,15 @@ package com.hit.memory;
 
 import com.hit.dm.DataModel;
 import com.max.algorithm.IAlgoCache;
+import com.max.algorithm.LRUAlgoCacheImpl;
 
 import java.lang.Long;
 
 public class CacheUnit<T> {
-
+	
 	private IAlgoCache<Long, DataModel<T>> iAlgoCache;
-
+	
+	
 	public CacheUnit(IAlgoCache<Long, DataModel<T>> algo) {
 		this.iAlgoCache = algo;
 	}

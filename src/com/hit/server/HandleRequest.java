@@ -35,7 +35,10 @@ public class HandleRequest<T> implements Runnable {
 		ObjectInputStream inputStream = null;
 		ObjectOutputStream outputStream = null;
 		String req = null;
+		String stats = null;
+		String answer = null;
 		boolean requestResult = false;
+		
 
 		try {
 
@@ -71,7 +74,6 @@ public class HandleRequest<T> implements Runnable {
 				requestResult = controller.delete(requestModels);
 				if (requestResult==true) {
 					write("deleted");
-					System.out.println("dasda");
 				} else {
 					write("not deleted");
 				}
@@ -88,11 +90,22 @@ public class HandleRequest<T> implements Runnable {
 			
 				break;
 			}
-
+			
+			if(requestAction.equals(STATS)) {
+				outputStream.writeObject(stats);
+				write("sending to client: "+stats);
+			}else {
+				answer = String.valueOf(requestResult);
+				outputStream.writeObject(answer);
+				write("sending to client: "+answer);
+			}
+			
 		} catch (IOException | ClassNotFoundException e) {
 
 			e.printStackTrace();
 		}
+		
+		
 
 	}
 
