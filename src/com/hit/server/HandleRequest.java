@@ -60,12 +60,13 @@ public class HandleRequest<T> implements Runnable {
 			String requestAction = map.get(ACTION);
 			write("using the action : "+requestAction);
 
-			switch (requestAction) {
+			switch (requestAction) {   // this section will decide which action to use
 			case GET:
 				resultModels = controller.get(requestModels);
 				if (resultModels != null) { // if there is nothing to return the result will be false
 					requestResult = true;
 					write("result of get is not null");
+					break;
 				}
 				write("result of get is NULL - no such elements");
 				break;
@@ -113,5 +114,7 @@ public class HandleRequest<T> implements Runnable {
 		System.out.println(builder.append(string));
 		builder.delete(0, string.length());
 	}
+	
+	private String createJSON()
 
 }

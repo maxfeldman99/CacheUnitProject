@@ -1,16 +1,14 @@
 package com.hit.memory;
 
+import com.hit.algorithm.IAlgoCache;
 import com.hit.dm.DataModel;
-import com.max.algorithm.IAlgoCache;
-import com.max.algorithm.LRUAlgoCacheImpl;
 
 import java.lang.Long;
 
 public class CacheUnit<T> {
-	
+
 	private IAlgoCache<Long, DataModel<T>> iAlgoCache;
-	
-	
+
 	public CacheUnit(IAlgoCache<Long, DataModel<T>> algo) {
 		this.iAlgoCache = algo;
 	}
@@ -18,10 +16,20 @@ public class CacheUnit<T> {
 	public DataModel<T>[] getDataModels(Long[] ids) {
 
 		DataModel<T>[] models = new DataModel[ids.length];
+
 		DataModel<T> dataModel;
 
 		for (int i = 0; i < ids.length; i++) {
-			dataModel = iAlgoCache.getElement(ids[i]); // if we have an id so we get it by id
+
+			// if(iAlgoCache.getElement(ids[i])!=null) {
+//				models[i].setContent((T) iAlgoCache.getElement(ids[i]));
+//				models[i].setDataModelId(ids[i]);
+//			}else {
+//				models[i].setContent(null);
+//				models[i].setDataModelId(ids[i]);;
+//			}
+			// dataModel.setContent(iAlgoCache.getElement(ids[i]));
+			dataModel = (DataModel<T>) iAlgoCache.getElement(ids[i]); // if we have an id so we get it by id
 			if (dataModel != null) { // if in cache
 				models[i] = dataModel;
 			}

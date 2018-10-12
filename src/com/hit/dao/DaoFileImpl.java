@@ -45,6 +45,7 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
 
 	@Override
 	public void delete(DataModel<T> t) throws IllegalArgumentException {
+		openOutStream();  /// was changed since i tried to open instream first
 		openInStream();
 		try {
 			if (hashMap.containsKey(t.getDataModelId()) && hashMap.get(t.getDataModelId()) != null) {
@@ -88,10 +89,11 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
 
 	}
 
+	
 	private void openInStream() { // to read from our file
 		try {
 			inputStream = new ObjectInputStream(new FileInputStream(filePath));
-			hashMap = (LinkedHashMap<Long, DataModel<T>>) inputStream.readObject(); // hashMap receives my data
+			hashMap =  (LinkedHashMap<Long, DataModel<T>>) inputStream.readObject(); // hashMap receives my data
 
 		} catch (Exception e) {
 			e.printStackTrace();

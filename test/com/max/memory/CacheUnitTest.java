@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Test;
 import com.hit.dao.DaoFileImpl;
 import com.hit.dm.DataModel;
 import com.hit.memory.CacheUnit;
-import com.max.algorithm.IAlgoCache;
-import com.max.algorithm.LRUAlgoCacheImpl;
+import com.hit.algorithm.IAlgoCache;
+import com.hit.algorithm.LRUAlgoCacheImpl;
 
 @DisplayName("CacheUnit Test")
 class CacheUnitTest {

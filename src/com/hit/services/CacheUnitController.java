@@ -26,7 +26,5 @@ public class CacheUnitController<T> {
 		
 	}
 	
-	public HashMap<String,String> getUnitStatistics(){
-		return cacheUnitService.getUnitStatistics();
-	}
+	
 }
