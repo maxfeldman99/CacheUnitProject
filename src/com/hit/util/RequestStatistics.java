@@ -28,20 +28,20 @@ public class RequestStatistics {
 	
 	//@SETTERS
 	
-	public void setAlgoName(String algoName) {
+	public void setAlgoName(String algoName) { //
 		this.algoName = algoName;
 	}
 
-	public void setCapacity(int capacity) {
+	public void setCapacity(int capacity) { //
 		this.capacity = capacity;
 	}
 
-	public void addModels(int modelsNum) {
+	public void addModels(int modelsNum) { //
 		this.modelsNum = +modelsNum;
 	}
 
-	public void addSwapNum(int swapNum) {
-		this.swapNum = +swapNum;
+	public void incrementSwapNum() { //
+		this.swapNum++;
 	}
 
 	public void incrementReqNum(int reqNum) {
@@ -72,12 +72,10 @@ public class RequestStatistics {
 
 	@Override
 	public String toString() {
-		return "RequestStatistics [algoName=" + algoName + ", capacity=" + capacity + ", modelsNum=" + modelsNum
-				+ ", swapNum=" + swapNum + ", reqCounter=" + reqNum + "]";
+		return "statistics,"+algoName+"," + capacity + "," + reqNum
+				+ "," + modelsNum + "," + swapNum;
 	}
 	
-	
-	
-	
+
 
 }

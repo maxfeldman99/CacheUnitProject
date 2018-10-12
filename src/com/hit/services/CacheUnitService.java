@@ -1,7 +1,10 @@
 package com.hit.services;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import com.hit.dao.DaoFileImpl;
 import com.hit.dao.IDao;
@@ -60,7 +63,6 @@ public class CacheUnitService<T> {
 			if (models != null) {
 				cacheUnit.putDataModels(models); // if we already took them from the file , we will save inside the
 													// cache
-				RequestStatistics.getInstance().addSwapNum(models.length);
 			}
 		}
 		return models;
@@ -99,16 +101,9 @@ public class CacheUnitService<T> {
 	// this method will collect the statistics for the current request and will
 	// deploy it to a map
 
-	public HashMap<String, String> getUnitStatistics() {
+	public String getUnitStatistics() {
 
-		//unitStats.put("action", action);
-		//unitStats.put("algo", algoName);
-	//	unitStats.put("capacity", String.valueOf(CACHE_CAPACITY));
-	//	unitStats.put("reqNum", String.valueOf());
-		//unitStats.put("modelsNum", String.valueOf(modelsNum));
-		//unitStats.put("extra", String.valueOf(answer));
-
-		return unitStats;
+		return RequestStatistics.getInstance().toString();
 
 	}
 

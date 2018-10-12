@@ -26,5 +26,9 @@ public class CacheUnitController<T> {
 		
 	}
 	
+	public String getUnitStatistics() {
+		return cacheUnitService.getUnitStatistics();
+	}
+	
 	
 }

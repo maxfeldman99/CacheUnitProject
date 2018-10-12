@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.hit.dm.DataModel;
 import com.hit.services.CacheUnitController;
+import com.hit.util.RequestStatistics;
+
 import java.io.*;
 import java.lang.reflect.Type;
 import java.net.Socket;
@@ -52,6 +54,7 @@ public class HandleRequest<T> implements Runnable {
 			Map<String, String> map = request.getHeaders();
 			DataModel<T>[] requestModels = request.getBody();
 			DataModel<T>[] resultModels = null;
+			RequestStatistics.getInstance().incrementReqNum(requestModels.length);
 
 			for (DataModel d : requestModels) {
 				System.out.println(d);
@@ -96,9 +99,12 @@ public class HandleRequest<T> implements Runnable {
 				outputStream.writeObject(stats);
 				write("sending to client: "+stats);
 			}else {
+				String toSendBack = controller.getUnitStatistics();
 				answer = String.valueOf(requestResult);
-				outputStream.writeObject(answer);
-				write("sending to client: "+answer);
+				outputStream.writeObject(toSendBack);
+				
+				
+				write("sending to client: "+toSendBack);
 			}
 			
 		} catch (IOException | ClassNotFoundException e) {
@@ -115,6 +121,6 @@ public class HandleRequest<T> implements Runnable {
 		builder.delete(0, string.length());
 	}
 	
-	private String createJSON()
+	
 
 }

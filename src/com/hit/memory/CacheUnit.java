@@ -2,6 +2,7 @@ package com.hit.memory;
 
 import com.hit.algorithm.IAlgoCache;
 import com.hit.dm.DataModel;
+import com.hit.util.RequestStatistics;
 
 import java.lang.Long;
 
@@ -46,6 +47,8 @@ public class CacheUnit<T> {
 			myModel = iAlgoCache.putElement(datamodels[i].getDataModelId(), datamodels[i]);
 			if (myModel == null) { // if already was inside the cache or cache is not full
 				nullCounter++;
+			}else {
+				RequestStatistics.getInstance().incrementSwapNum(); // adding the needed data to the statistics class
 			}
 
 		}
