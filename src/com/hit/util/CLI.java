@@ -69,7 +69,6 @@ public class CLI implements Runnable {
 			}
 			write(SHUTDOWN);
 			support.firePropertyChange(serverStatus,"on","off");
-//			scanner.close();
 		
 		}
 	

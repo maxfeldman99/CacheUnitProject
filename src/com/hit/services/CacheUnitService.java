@@ -18,16 +18,10 @@ public class CacheUnitService<T> {
 	// this class will contain the logic of the dispatched requests from client
 
 	private final int CAPACITY = 10;
-	private final int CACHE_CAPACITY = 15;
-	private final String DEL = "delete";
-	private final String UP = "update";
-	private final String GET = "get";
 	private CacheUnit<T> cacheUnit = new CacheUnit<>(new LRUAlgoCacheImpl<>(CAPACITY));
-	private IDao<Serializable, T> dao2;
 	private DaoFileImpl<T> dao = new DaoFileImpl<>("DataSource.txt"); // should i use IDAO instead?
 	private DataModel<T> dataModel = null;
-	private HashMap<String, String> unitStats = new HashMap<>();
-
+	
 	public CacheUnitService() {
 		RequestStatistics.getInstance().setAlgoName("LRU");
 		RequestStatistics.getInstance().setCapacity(CAPACITY);
@@ -37,7 +31,6 @@ public class CacheUnitService<T> {
 		boolean isDeleted = false;
 		Long ids[] = new Long[dataModels.length];
 		RequestStatistics.getInstance().addModels(dataModels.length);
-
 		if (ids.length > 0) { // removing from file
 			for (int i = 0; i < dataModels.length; i++) {
 				dataModel = dataModels[i];
@@ -50,7 +43,7 @@ public class CacheUnitService<T> {
 		}
 		return isDeleted;
 	}
-
+	
 	public DataModel<T>[] get(DataModel<T>[] dataModels) {
 
 		DataModel<T>[] models = null;
@@ -62,19 +55,17 @@ public class CacheUnitService<T> {
 		}
 
 		models = cacheUnit.getDataModels(ids);
-
+		
 		if (models == null || models.length < dataModels.length) { // if the models are not inside the cache
 			for (int i = 0; i < ids.length; i++) {
-				models[i] = (DataModel<T>) dao.find(ids[i]); // get from file
+				models[i] = (DataModel<T>) dao.find(ids[i]); // get from file(HDD)
 			}
 			if (models != null) {
 				cacheUnit.putDataModels(models); // if we already took them from the file , we will save inside the
 													// cache
 			}
 		}
-
 		return models;
-
 	}
 
 	public boolean update(DataModel<T>[] dataModels) {
@@ -85,39 +76,25 @@ public class CacheUnitService<T> {
 
 		for (int i = 0; i < dataModels.length; i++) { // first we create an id's array
 			ids[i] = dataModels[i].getDataModelId();
-			System.out.println("the id is: " + ids[i]);
 		}
 		
-		System.out.println("before chache request");
 		cacheModels = cacheUnit.getDataModels(ids); // we check if it exists in cache
-		
-		System.out.println("size: "+ cacheModels.length);
-		
-		for(DataModel data: cacheModels)
-		{
-			System.out.println(data);
-		}
 		
 		if (cacheModels.length > 0 && cacheModels != null) {
 			for (int i = 0; i < cacheModels.length; i++) {
 				if (cacheModels[i].getContent() != null) 
 				{
-					System.out.println("Before If!");
+
 					if ((cacheModels[i].getContent()) != (dataModels[i].getContent())) 
 					{
 						isUpdated = true; // if one of the values is not same as cache values then its updated
-						System.out.println("model updated");
 					}
-					System.out.println("After If!");
-					
 					isUpdated = true;
 				}
 			}
 		}
 		cacheUnit.putDataModels(dataModels); // since we wanted to update the values, we place them inside the cache
 												// as well
-
-		System.out.println("updated status is : " + isUpdated);
 		return isUpdated;
 
 	}

@@ -41,7 +41,6 @@ public class HandleRequest<T> implements Runnable {
 		String answer = null;
 		boolean requestResult = false;
 		RequestStatistics requestStatistics = new RequestStatistics();
-		
 
 		try {
 
@@ -56,16 +55,16 @@ public class HandleRequest<T> implements Runnable {
 			DataModel<T>[] requestModels = request.getBody();
 			DataModel<T>[] resultModels = null;
 			requestStatistics.getInstance().incrementReqNum(requestModels.length);
-			System.out.println("Req Num: "+RequestStatistics.getInstance().getReqNum());
-			
+			System.out.println("Req Num: " + RequestStatistics.getInstance().getReqNum());
+
 			for (DataModel d : requestModels) {
 				System.out.println(d);
 			}
 
 			String requestAction = map.get(ACTION);
-			write("using the action : "+requestAction);
+			write("using the action : " + requestAction);
 
-			switch (requestAction) {   // this section will decide which action to use
+			switch (requestAction) { // this section will decide which action to use
 			case GET:
 				resultModels = controller.get(requestModels);
 				if (resultModels != null) { // if there is nothing to return the result will be false
@@ -78,7 +77,7 @@ public class HandleRequest<T> implements Runnable {
 
 			case DEL:
 				requestResult = controller.delete(requestModels);
-				if (requestResult==true) {
+				if (requestResult == true) {
 					write("deleted");
 				} else {
 					write("not deleted");
@@ -92,38 +91,27 @@ public class HandleRequest<T> implements Runnable {
 					write("not updated");
 				}
 				break;
-			case STATS:
-			
-				break;
+
 			}
-			
-			if(requestAction.equals(STATS)) {
+
+			if (requestAction.equals(STATS)) {
 				outputStream.writeObject(stats);
-				write("sending to client: "+stats);
-			}else {
+				write("sending to client: " + stats);
+			} else {
 				String toSendBack = controller.getUnitStatistics();
 				answer = String.valueOf(requestResult); // optional
-				
 				outputStream.writeObject(toSendBack);
-				
-				
-				write("sending to client: "+toSendBack);
+				write("sending to client: " + toSendBack);
 			}
-			
-		} catch (IOException | ClassNotFoundException e) {
 
+		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		
-		
-
 	}
 
 	private void write(String string) {
 		System.out.println(builder.append(string));
 		builder.delete(0, string.length());
 	}
-	
-	
 
 }

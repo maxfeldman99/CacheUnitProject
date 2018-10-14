@@ -14,7 +14,10 @@ public class CacheUnit<T> {
 		this.iAlgoCache = algo;
 	}
 
-	synchronized public DataModel<T>[] getDataModels(Long[] ids) {
+	// methods are synchronized for the situation if more then one client is trying
+	// to enter the same section simultaneously
+	
+	synchronized public DataModel<T>[] getDataModels(Long[] ids) { //
 
 		DataModel<T>[] models = new DataModel[ids.length];
 
@@ -22,17 +25,6 @@ public class CacheUnit<T> {
 
 		for (int i = 0; i < ids.length; i++) {
 
-			// if(iAlgoCache.getElement(ids[i])!=null) {
-//				models[i].setContent((T) iAlgoCache.getElement(ids[i]));
-//				models[i].setDataModelId(ids[i]);
-//			}else {
-//				models[i].setContent(null);
-//				models[i].setDataModelId(ids[i]);;
-//			}
-			// dataModel.setContent(iAlgoCache.getElement(ids[i]));
-
-			// dataModel = iAlgoCache.getElement(ids[i]); // if we have an id so we get it
-			// by id
 			dataModel = new DataModel(ids[i], iAlgoCache.getElement(ids[i]));
 
 			if (dataModel != null) { // if in cache
