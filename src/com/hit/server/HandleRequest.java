@@ -40,6 +40,7 @@ public class HandleRequest<T> implements Runnable {
 		String stats = null;
 		String answer = null;
 		boolean requestResult = false;
+		RequestStatistics requestStatistics = new RequestStatistics();
 		
 
 		try {
@@ -50,12 +51,13 @@ public class HandleRequest<T> implements Runnable {
 
 			Type ref = new TypeToken<Request<DataModel<T>[]>>() {
 			}.getType();
-			Request<DataModel<T>[]> request = gson.fromJson(req, ref);
+			Request<DataModel<T>[]> request = gson.fromJson(req, ref); // conversion of the JSON data
 			Map<String, String> map = request.getHeaders();
 			DataModel<T>[] requestModels = request.getBody();
 			DataModel<T>[] resultModels = null;
-			RequestStatistics.getInstance().incrementReqNum(requestModels.length);
-
+			requestStatistics.getInstance().incrementReqNum(requestModels.length);
+			System.out.println("Req Num: "+RequestStatistics.getInstance().getReqNum());
+			
 			for (DataModel d : requestModels) {
 				System.out.println(d);
 			}
@@ -100,7 +102,8 @@ public class HandleRequest<T> implements Runnable {
 				write("sending to client: "+stats);
 			}else {
 				String toSendBack = controller.getUnitStatistics();
-				answer = String.valueOf(requestResult);
+				answer = String.valueOf(requestResult); // optional
+				
 				outputStream.writeObject(toSendBack);
 				
 				

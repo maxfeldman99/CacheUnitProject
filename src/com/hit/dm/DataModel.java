@@ -48,15 +48,13 @@ public class DataModel<T> implements Serializable {
 		return true;
 
 	}
-	
 
-	@Override
-	public int hashCode() { // i'm using prime numbers to hash it efficiently
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
-
+//	@Override
+//	public int hashCode() { // i'm using prime numbers to hash it efficiently
+//		final int prime = 31;
+//		int result = 1;
+//		result = prime * result + ((id == null) ? 0 : id.hashCode());
+//		return result;
+//	}
 
 }

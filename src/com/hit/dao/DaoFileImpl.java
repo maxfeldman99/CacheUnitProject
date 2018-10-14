@@ -29,7 +29,7 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
 	}
 
 	@Override
-	public void save(DataModel<T> t) {
+	public void save(DataModel<T> t) { // this method will save our data inside a text file
 		try {
 			openInStream(); // first , we need to update our hashMap
 			if (t != null) {
@@ -37,15 +37,20 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
 				openOutStream();
 			}
 
-		} finally {
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		finally { // finally block to close my streams no matter what happened before
 			closeStreamSafe();
 		}
 
 	}
 
 	@Override
-	public void delete(DataModel<T> t) throws IllegalArgumentException {
-		openOutStream();  /// was changed since i tried to open instream first
+	public void delete(DataModel<T> t) throws IllegalArgumentException { // this method will delete our data from the
+																			// text file
+		openOutStream(); /// was changed since i tried to open instream first
 		openInStream();
 		try {
 			if (hashMap.containsKey(t.getDataModelId()) && hashMap.get(t.getDataModelId()) != null) {
@@ -55,18 +60,21 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
 
 			}
 
+		} catch (Exception e) {
+			e.printStackTrace();
 		} finally {
 			closeStreamSafe();
 		}
 	}
 
 	@Override
-	public DataModel<T> find(Long id) throws IllegalArgumentException {
-			
-		if(id==null) {
+	public DataModel<T> find(Long id) throws IllegalArgumentException { // this method will find our data located inside
+																		// a text file
+
+		if (id == null) {
 			throw new IllegalArgumentException(); // making sure no null id was given;
 		}
-			
+
 		try {
 			if ((hashMap.containsKey(id)) && (hashMap.get(id).getContent() != null)) {
 				return hashMap.get(id);
@@ -89,11 +97,10 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
 
 	}
 
-	
 	private void openInStream() { // to read from our file
 		try {
 			inputStream = new ObjectInputStream(new FileInputStream(filePath));
-			hashMap =  (LinkedHashMap<Long, DataModel<T>>) inputStream.readObject(); // hashMap receives my data
+			hashMap = (LinkedHashMap<Long, DataModel<T>>) inputStream.readObject(); // hashMap receives my data
 
 		} catch (Exception e) {
 			e.printStackTrace();

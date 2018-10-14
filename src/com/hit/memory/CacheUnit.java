@@ -14,11 +14,11 @@ public class CacheUnit<T> {
 		this.iAlgoCache = algo;
 	}
 
-	public DataModel<T>[] getDataModels(Long[] ids) {
+	synchronized public DataModel<T>[] getDataModels(Long[] ids) {
 
 		DataModel<T>[] models = new DataModel[ids.length];
 
-		DataModel<T> dataModel;
+		DataModel dataModel = null;
 
 		for (int i = 0; i < ids.length; i++) {
 
@@ -30,7 +30,11 @@ public class CacheUnit<T> {
 //				models[i].setDataModelId(ids[i]);;
 //			}
 			// dataModel.setContent(iAlgoCache.getElement(ids[i]));
-			dataModel = (DataModel<T>) iAlgoCache.getElement(ids[i]); // if we have an id so we get it by id
+
+			// dataModel = iAlgoCache.getElement(ids[i]); // if we have an id so we get it
+			// by id
+			dataModel = new DataModel(ids[i], iAlgoCache.getElement(ids[i]));
+
 			if (dataModel != null) { // if in cache
 				models[i] = dataModel;
 			}
@@ -39,7 +43,8 @@ public class CacheUnit<T> {
 		return models;
 	}
 
-	public DataModel<T>[] putDataModels(DataModel<T>[] datamodels) {
+	synchronized public DataModel<T>[] putDataModels(DataModel<T>[] datamodels) { // insertion of requested models
+																					// inside the cache
 		DataModel<T> myModel;
 		int nullCounter = 0;
 		for (int i = 0; i < datamodels.length; i++) {
@@ -47,7 +52,7 @@ public class CacheUnit<T> {
 			myModel = iAlgoCache.putElement(datamodels[i].getDataModelId(), datamodels[i]);
 			if (myModel == null) { // if already was inside the cache or cache is not full
 				nullCounter++;
-			}else {
+			} else {
 				RequestStatistics.getInstance().incrementSwapNum(); // adding the needed data to the statistics class
 			}
 
@@ -59,7 +64,7 @@ public class CacheUnit<T> {
 		return datamodels;
 	}
 
-	public void removeDataModels(Long[] ids) {
+	synchronized public void removeDataModels(Long[] ids) { // removing the requested models from the cache
 		DataModel<T> dataModel;
 
 		for (int i = 0; i < ids.length; i++) {

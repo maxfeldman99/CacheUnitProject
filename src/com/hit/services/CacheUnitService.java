@@ -14,6 +14,9 @@ import com.hit.util.RequestStatistics;
 import com.hit.algorithm.LRUAlgoCacheImpl;
 
 public class CacheUnitService<T> {
+
+	// this class will contain the logic of the dispatched requests from client
+
 	private final int CAPACITY = 10;
 	private final int CACHE_CAPACITY = 15;
 	private final String DEL = "delete";
@@ -34,10 +37,11 @@ public class CacheUnitService<T> {
 		boolean isDeleted = false;
 		Long ids[] = new Long[dataModels.length];
 		RequestStatistics.getInstance().addModels(dataModels.length);
+
 		if (ids.length > 0) { // removing from file
 			for (int i = 0; i < dataModels.length; i++) {
 				dataModel = dataModels[i];
-				dao.delete(dataModel);
+				dao.delete(dataModel); // removing from dao
 				System.out.println("deleting model : " + dataModel.getDataModelId());
 				ids[i] = dataModel.getDataModelId();
 			}
@@ -48,14 +52,17 @@ public class CacheUnitService<T> {
 	}
 
 	public DataModel<T>[] get(DataModel<T>[] dataModels) {
-		
+
 		DataModel<T>[] models = null;
 		Long ids[] = new Long[dataModels.length];
 		RequestStatistics.getInstance().addModels(dataModels.length);
-		for (int i = 0; i < dataModels.length; i++) {
+
+		for (int i = 0; i < dataModels.length; i++) { // creating an id's array
 			ids[i] = dataModels[i].getDataModelId();
 		}
+
 		models = cacheUnit.getDataModels(ids);
+
 		if (models == null || models.length < dataModels.length) { // if the models are not inside the cache
 			for (int i = 0; i < ids.length; i++) {
 				models[i] = (DataModel<T>) dao.find(ids[i]); // get from file
@@ -65,33 +72,50 @@ public class CacheUnitService<T> {
 													// cache
 			}
 		}
+
 		return models;
 
 	}
 
 	public boolean update(DataModel<T>[] dataModels) {
 		boolean isUpdated = false;
-		DataModel<T>[] cacheModels = null;
+		DataModel[] cacheModels = null;
 		Long ids[] = new Long[dataModels.length];
 		RequestStatistics.getInstance().addModels(dataModels.length);
+
 		for (int i = 0; i < dataModels.length; i++) { // first we create an id's array
 			ids[i] = dataModels[i].getDataModelId();
 			System.out.println("the id is: " + ids[i]);
 		}
+		
+		System.out.println("before chache request");
 		cacheModels = cacheUnit.getDataModels(ids); // we check if it exists in cache
-
+		
+		System.out.println("size: "+ cacheModels.length);
+		
+		for(DataModel data: cacheModels)
+		{
+			System.out.println(data);
+		}
+		
 		if (cacheModels.length > 0 && cacheModels != null) {
 			for (int i = 0; i < cacheModels.length; i++) {
-				if (cacheModels[i].getContent() != null) {
-					if ((cacheModels[i].getContent()) != (dataModels[i].getContent())) {
+				if (cacheModels[i].getContent() != null) 
+				{
+					System.out.println("Before If!");
+					if ((cacheModels[i].getContent()) != (dataModels[i].getContent())) 
+					{
 						isUpdated = true; // if one of the values is not same as cache values then its updated
 						System.out.println("model updated");
 					}
+					System.out.println("After If!");
+					
 					isUpdated = true;
 				}
 			}
 		}
-		cacheUnit.putDataModels(dataModels);
+		cacheUnit.putDataModels(dataModels); // since we wanted to update the values, we place them inside the cache
+												// as well
 
 		System.out.println("updated status is : " + isUpdated);
 		return isUpdated;
@@ -99,12 +123,10 @@ public class CacheUnitService<T> {
 	}
 
 	// this method will collect the statistics for the current request and will
-	// deploy it to a map
+	// deploy it to a map later inside the view class
 
-	public String getUnitStatistics() {
-
+	public String getUnitStatistics() { 
 		return RequestStatistics.getInstance().toString();
-
 	}
 
 }

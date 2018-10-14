@@ -45,7 +45,7 @@ public class RequestStatistics {
 	}
 
 	public void incrementReqNum(int reqNum) {
-		this.reqNum =+ reqNum;
+		this.reqNum += reqNum;
 	}
 
 	//@GETTERS

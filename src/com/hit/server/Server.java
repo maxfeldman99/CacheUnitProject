@@ -22,7 +22,7 @@ public class Server implements PropertyChangeListener, Runnable {
 	private static final int PORT = 12345;
 	private static boolean REQUEST_IS_RUNNING = true;
 	private static boolean SERVER_IS_RUNNING = true;
-	private static final int MAX_CLIENTS = 3;
+	private static final int MAX_CLIENTS = 5;
 	private static String serverStatus = "on";
 	// private ObjectInputStream objectInputStream = null;
 //	private ObjectOutputStream objectOutputStream = null;
@@ -34,7 +34,6 @@ public class Server implements PropertyChangeListener, Runnable {
 
 	public Server() {
 		cacheUnitController = new CacheUnitController<Request<String>>(); // maybe not needed in this position
-		
 		threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(MAX_CLIENTS);
 
 	}
@@ -48,14 +47,20 @@ public class Server implements PropertyChangeListener, Runnable {
 
 		try {
 			serverSocket = new ServerSocket(PORT);
-			socket = serverSocket.accept();
+			//socket = serverSocket.accept();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		while (SERVER_IS_RUNNING) {
-			while (REQUEST_IS_RUNNING) {
+			try {
+				socket = serverSocket.accept();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 				try {
+					
 					System.out.println(" number of activated threads " + threadPoolExecutor.getActiveCount());
 					// serverSocket.setSoTimeout(TIME_OUT_TIME);
 					// ObjectInputStream objectInputStream = new
@@ -75,6 +80,7 @@ public class Server implements PropertyChangeListener, Runnable {
 					
 					threadPoolExecutor.submit(thread);
 					System.out.println(" number of activated threads " + threadPoolExecutor.getActiveCount());
+					
 
 					// System.out.println("message from the client: " + inputMsg);
 //				objectOutputStream.writeObject("closing conneciton");
@@ -91,7 +97,6 @@ public class Server implements PropertyChangeListener, Runnable {
 				System.out.println("exiting server loop");
 				REQUEST_IS_RUNNING = false;
 
-			}
 
 			if (serverStatus.equals("off") && threadPoolExecutor.getActiveCount() == 0) {
 				try {
