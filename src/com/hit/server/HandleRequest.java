@@ -40,7 +40,6 @@ public class HandleRequest<T> implements Runnable {
 		String stats = null;
 		String answer = null;
 		boolean requestResult = false;
-		RequestStatistics requestStatistics = new RequestStatistics();
 
 		try {
 
@@ -54,58 +53,56 @@ public class HandleRequest<T> implements Runnable {
 			Map<String, String> map = request.getHeaders();
 			DataModel<T>[] requestModels = request.getBody();
 			DataModel<T>[] resultModels = null;
-			requestStatistics.getInstance().incrementReqNum(requestModels.length);
-			System.out.println("Req Num: " + RequestStatistics.getInstance().getReqNum());
-
-			for (DataModel d : requestModels) {
-				System.out.println(d);
-			}
-
+			RequestStatistics.getInstance().incrementReqNum(requestModels.length);
+			
 			String requestAction = map.get(ACTION);
-			write("using the action : " + requestAction);
-
+			
 			switch (requestAction) { // this section will decide which action to use
 			case GET:
 				resultModels = controller.get(requestModels);
 				if (resultModels != null) { // if there is nothing to return the result will be false
 					requestResult = true;
-					write("result of get is not null");
 					break;
 				}
-				write("result of get is NULL - no such elements");
+				// else no such elements
 				break;
 
 			case DEL:
 				requestResult = controller.delete(requestModels);
-				if (requestResult == true) {
-					write("deleted");
-				} else {
-					write("not deleted");
-				}
+				// requestResult could be true or false if deleted
 				break;
 
 			case UPDATE:
-				if (requestResult = controller.update(requestModels)) {
-					write("updated");
-				} else {
-					write("not updated");
-				}
+				requestResult = controller.update(requestModels);  // updating they current value
 				break;
-
+				// requestResult could be true or false if updated
 			}
 
 			if (requestAction.equals(STATS)) {
 				outputStream.writeObject(stats);
-				write("sending to client: " + stats);
 			} else {
 				String toSendBack = controller.getUnitStatistics();
 				answer = String.valueOf(requestResult); // optional
 				outputStream.writeObject(toSendBack);
-				write("sending to client: " + toSendBack);
 			}
 
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
+		}		finally { // finally block 
+			try {
+				if (inputStream != null) 
+					inputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			try {
+				if (outputStream != null) {
+					outputStream.flush();
+					outputStream.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

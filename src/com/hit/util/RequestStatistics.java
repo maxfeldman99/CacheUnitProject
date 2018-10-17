@@ -37,7 +37,7 @@ public class RequestStatistics {
 	}
 
 	public void addModels(int modelsNum) { //
-		this.modelsNum = +modelsNum;
+		this.modelsNum +=modelsNum;
 	}
 
 	public void incrementSwapNum() { //

@@ -18,9 +18,7 @@ import com.hit.services.CacheUnitController;
 
 public class Server implements PropertyChangeListener, Runnable {
 
-	
 	private static final int PORT = 12345;
-	private static boolean REQUEST_IS_RUNNING = true;
 	private static boolean SERVER_IS_RUNNING = true;
 	private static final int MAX_CLIENTS = 5;
 	private static String serverStatus = "on";
@@ -31,18 +29,19 @@ public class Server implements PropertyChangeListener, Runnable {
 	Socket socket;
 
 	public Server() {
-		cacheUnitController = new CacheUnitController<Request<String>>(); 
+		cacheUnitController = new CacheUnitController<Request<String>>();
 		threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(MAX_CLIENTS);
 		// i'm using threadPool to let several clients to access the server
 	}
+
 	public void propertyChange(PropertyChangeEvent evt) { // to get updates , server is observing for changes from CLI
-		serverStatus = (String) evt.getNewValue(); 
+		serverStatus = (String) evt.getNewValue();
 	}
 
 	@Override
 	public void run() {
 
-		try {
+		try { // opening new connection
 			serverSocket = new ServerSocket(PORT);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -53,25 +52,20 @@ public class Server implements PropertyChangeListener, Runnable {
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-				try {
-					
-					System.out.println(" number of activated threads " + threadPoolExecutor.getActiveCount());
-					thread = new Thread(new HandleRequest<Request<String>>(socket, cacheUnitController));				
-					threadPoolExecutor.submit(thread);
-					System.out.println(" number of activated threads " + threadPoolExecutor.getActiveCount());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				System.out.println("exiting server loop");
-				REQUEST_IS_RUNNING = false;
+			try {
+
+				thread = new Thread(new HandleRequest<Request<String>>(socket, cacheUnitController));
+				threadPoolExecutor.submit(thread); // number of threads was incremented
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
 			if (serverStatus.equals("off") && threadPoolExecutor.getActiveCount() == 0) {
 				try {
-					System.out.println("turning off the socket");
-					threadPoolExecutor.shutdown();
+					threadPoolExecutor.shutdown(); // turning off the socket and threadPool
 				} catch (Exception e) {
 					e.printStackTrace();
-				} finally {
+				} finally { // finally block to close the stream safely
 					try {
 						socket.close();
 						serverSocket.close();

@@ -19,9 +19,9 @@ public class CacheUnitService<T> {
 
 	private final int CAPACITY = 10;
 	private CacheUnit<T> cacheUnit = new CacheUnit<>(new LRUAlgoCacheImpl<>(CAPACITY));
-	private DaoFileImpl<T> dao = new DaoFileImpl<>("DataSource.txt"); // should i use IDAO instead?
+	private DaoFileImpl<T> dao = new DaoFileImpl<>("DataSource.txt"); 
 	private DataModel<T> dataModel = null;
-	
+
 	public CacheUnitService() {
 		RequestStatistics.getInstance().setAlgoName("LRU");
 		RequestStatistics.getInstance().setCapacity(CAPACITY);
@@ -35,7 +35,6 @@ public class CacheUnitService<T> {
 			for (int i = 0; i < dataModels.length; i++) {
 				dataModel = dataModels[i];
 				dao.delete(dataModel); // removing from dao
-				System.out.println("deleting model : " + dataModel.getDataModelId());
 				ids[i] = dataModel.getDataModelId();
 			}
 			cacheUnit.removeDataModels(ids); // removing from cache
@@ -43,7 +42,7 @@ public class CacheUnitService<T> {
 		}
 		return isDeleted;
 	}
-	
+
 	public DataModel<T>[] get(DataModel<T>[] dataModels) {
 
 		DataModel<T>[] models = null;
@@ -55,7 +54,7 @@ public class CacheUnitService<T> {
 		}
 
 		models = cacheUnit.getDataModels(ids);
-		
+
 		if (models == null || models.length < dataModels.length) { // if the models are not inside the cache
 			for (int i = 0; i < ids.length; i++) {
 				models[i] = (DataModel<T>) dao.find(ids[i]); // get from file(HDD)
@@ -77,16 +76,14 @@ public class CacheUnitService<T> {
 		for (int i = 0; i < dataModels.length; i++) { // first we create an id's array
 			ids[i] = dataModels[i].getDataModelId();
 		}
-		
+
 		cacheModels = cacheUnit.getDataModels(ids); // we check if it exists in cache
-		
+
 		if (cacheModels.length > 0 && cacheModels != null) {
 			for (int i = 0; i < cacheModels.length; i++) {
-				if (cacheModels[i].getContent() != null) 
-				{
+				if (cacheModels[i].getContent() != null) {
 
-					if ((cacheModels[i].getContent()) != (dataModels[i].getContent())) 
-					{
+					if ((cacheModels[i].getContent()) != (dataModels[i].getContent())) {
 						isUpdated = true; // if one of the values is not same as cache values then its updated
 					}
 					isUpdated = true;
@@ -102,7 +99,7 @@ public class CacheUnitService<T> {
 	// this method will collect the statistics for the current request and will
 	// deploy it to a map later inside the view class
 
-	public String getUnitStatistics() { 
+	public String getUnitStatistics() {
 		return RequestStatistics.getInstance().toString();
 	}
 

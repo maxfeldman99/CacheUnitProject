@@ -20,18 +20,14 @@ public class CacheUnit<T> {
 	synchronized public DataModel<T>[] getDataModels(Long[] ids) { //
 
 		DataModel<T>[] models = new DataModel[ids.length];
-
 		DataModel dataModel = null;
-
+		
 		for (int i = 0; i < ids.length; i++) {
-
 			dataModel = new DataModel(ids[i], iAlgoCache.getElement(ids[i]));
-
 			if (dataModel != null) { // if in cache
 				models[i] = dataModel;
-			}
+				}
 		}
-
 		return models;
 	}
 
@@ -40,14 +36,12 @@ public class CacheUnit<T> {
 		DataModel<T> myModel;
 		int nullCounter = 0;
 		for (int i = 0; i < datamodels.length; i++) {
-
 			myModel = iAlgoCache.putElement(datamodels[i].getDataModelId(), datamodels[i]);
 			if (myModel == null) { // if already was inside the cache or cache is not full
 				nullCounter++;
 			} else {
 				RequestStatistics.getInstance().incrementSwapNum(); // adding the needed data to the statistics class
 			}
-
 		}
 		if (nullCounter == datamodels.length) { // if all of the models were already inside the cache or cache was never
 												// full
@@ -62,7 +56,6 @@ public class CacheUnit<T> {
 		for (int i = 0; i < ids.length; i++) {
 			dataModel = iAlgoCache.getElement(ids[i]);
 			iAlgoCache.removeElement(ids[i]);
-
 		}
 	}
 
