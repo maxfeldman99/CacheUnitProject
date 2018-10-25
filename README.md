@@ -1,6 +1,6 @@
 # CacheUnitProject
 
-Java project , Part 2,3 - MMU - Cache Unit and Server implementation\
+#**Java project , Part 2,3 - MMU - Cache Unit and Server implementation**
 
 This part of the MMU project includes the server interface that is running in a multi threaded envioremnt, each client sends a request to store data inside the server cache unit.\
 the data is beeing stored using Paging algorithms that were inclued with a JAR file.\
