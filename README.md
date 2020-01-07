@@ -32,4 +32,4 @@ Unit testing (Junit)
 
 
 
-![CLIENT GUI DEMO](http://i65.tinypic.com/2b1ikn.jpg)
+![CLIENT GUI DEMO](https://i.imgur.com/bEAsqTo.jpeg)
